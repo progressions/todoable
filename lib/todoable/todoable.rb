@@ -98,4 +98,9 @@ class Todoable
     path = "lists/#{list_id}/items/#{item_id}/finish"
     request(method: :put, path: path)
   end
+
+  def delete_item(list_id:, item_id:)
+    path = "lists/#{list_id}/items/#{item_id}"
+    request(method: :delete, path: path)
+  end
 end
