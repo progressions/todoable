@@ -4,6 +4,9 @@ RSpec.describe Todoable do
   end
 
   it "does something useful" do
-    expect(false).to eq(true)
+    # todoable = Todoable.new
+
+    # expect(todoable.token).to eq("whut")
+    # expect(todoable.expires_at).to eq("yeah")
   end
 end

@@ -1,5 +1,5 @@
 require "todoable/version"
-
-module Todoable
-  # Your code goes here...
-end
+require "rest-client"
+require "json"
+require "date"
+require "todoable/todoable"
