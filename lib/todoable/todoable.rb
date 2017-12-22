@@ -39,28 +39,63 @@ class Todoable
       "Content-Type" => "application/json",
     }
 
-    response = RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers)
-    JSON.parse(response.body)
+    RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers)
   end
 
   def get(path:, params: {})
-    request(method: :get, path: path, params: params)
+    response = request(method: :get, path: path, params: params)
+    JSON.parse(response.body)
   end
 
   def post(path:, params: {})
-    request(method: :post, path: path, params: params)
+    response = request(method: :post, path: path, params: params)
+    JSON.parse(response.body)
   end
 
-  def index
-    get(path: "lists")
+  def lists
+    get(path: "lists")["lists"]
   end
 
-  def create(name)
+  def create_list(name:)
     params = {
       "list" => {
         "name" => name
       }
     }
     post(path: "lists", params: params)
+  end
+
+  def get_list(list_id:)
+    get(path: "lists/#{list_id}")
+  end
+
+  def update_list(list_id:, name:)
+    path = "lists/#{list_id}"
+    params = {
+      "list" => {
+        "name" => name
+      }
+    }
+    request(method: :patch, path: path, params: params)
+  end
+
+  def delete_list(list_id:)
+    path = "lists/#{list_id}"
+    request(method: :delete, path: path)
+  end
+
+  def create_item(list_id:, name:)
+    path = "lists/#{list_id}/items"
+    params = {
+      "item" => {
+        "name" => name
+      }
+    }
+    post(path: path, params: params)
+  end
+
+  def finish_item(list_id:, item_id:)
+    path = "lists/#{list_id}/items/#{item_id}/finish"
+    request(method: :put, path: path)
   end
 end
