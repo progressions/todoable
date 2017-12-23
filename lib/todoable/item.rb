@@ -5,7 +5,7 @@ module Todoable
         @client ||= Todoable::Client.new
       end
 
-      def create_item(list_id:, name:)
+      def create(list_id:, name:)
         path = "lists/#{list_id}/items"
         params = {
           "item" => {
@@ -15,13 +15,13 @@ module Todoable
         client.post(path: path, params: params)
       end
 
-      def finish_item(list_id:, item_id:)
-        path = "lists/#{list_id}/items/#{item_id}/finish"
+      def finish(list_id:, id:)
+        path = "lists/#{list_id}/items/#{id}/finish"
         client.request(method: :put, path: path)
       end
 
-      def delete_item(list_id:, item_id:)
-        path = "lists/#{list_id}/items/#{item_id}"
+      def delete(list_id:, id:)
+        path = "lists/#{list_id}/items/#{id}"
         client.request(method: :delete, path: path)
       end
     end

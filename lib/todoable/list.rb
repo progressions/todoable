@@ -20,12 +20,12 @@ module Todoable
         client.post(path: "listz", params: params)
       end
 
-      def get(list_id:)
-        client.get(path: "lists/#{list_id}")
+      def get(id:)
+        client.get(path: "lists/#{id}")
       end
 
-      def update(list_id:, name:)
-        path = "lists/#{list_id}"
+      def update(id:, name:)
+        path = "lists/#{id}"
         params = {
           "list" => {
             "name" => name
@@ -34,8 +34,8 @@ module Todoable
         client.request(method: :patch, path: path, params: params)
       end
 
-      def delete(list_id:)
-        path = "lists/#{list_id}"
+      def delete(id:)
+        path = "lists/#{id}"
         client.request(method: :delete, path: path)
       end
     end

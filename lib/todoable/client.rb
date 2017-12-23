@@ -27,7 +27,7 @@ module Todoable
         "Content-Type" => "application/json",
       }
 
-      response = RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers) do |response|
+      RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers) do |response|
         case response.code
         when 200..300
           begin
