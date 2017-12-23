@@ -3,7 +3,6 @@ require 'json'
 require 'date'
 
 require 'todoable/version'
-require 'todoable/todoable'
 
 module Todoable
   autoload :Client, 'todoable/client'

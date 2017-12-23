@@ -6,7 +6,9 @@ module Todoable
       end
 
       def all
-        client.get(path: "lists")["lists"]
+        response = client.get(path: "lists")
+
+        response["lists"]
       end
 
       def create(name:)
@@ -15,7 +17,7 @@ module Todoable
             "name" => name
           }
         }
-        client.post(path: "lists", params: params)
+        client.post(path: "listz", params: params)
       end
 
       def get(list_id:)

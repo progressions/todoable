@@ -2,6 +2,10 @@ module Todoable
   class Client
     attr_reader :token, :expires_at
 
+    class NotFound < StandardError; end
+    class Unauthorized < StandardError; end
+    class UnprocessableEntity < StandardError; end
+
     # http://todoable.teachable.tech/api/
     # username = "progressions@gmail.com"
     # password = "todoable"
@@ -23,17 +27,30 @@ module Todoable
         "Content-Type" => "application/json",
       }
 
-      RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers)
+      response = RestClient::Request.execute(method: method, url: uri, payload: params.to_json, headers: headers) do |response|
+        case response.code
+        when 200..300
+          begin
+            JSON.parse(response.body)
+          rescue JSON::ParserError
+            response.body
+          end
+        when 404
+          raise Todoable::Client::NotFound.new
+        when 422
+          errors = JSON.parse(response.body)
+
+          raise Todoable::Client::UnprocessableEntity.new(errors)
+        end
+      end
     end
 
     def get(path:, params: {})
-      response = request(method: :get, path: path, params: params)
-      JSON.parse(response.body)
+      request(method: :get, path: path, params: params)
     end
 
     def post(path:, params: {})
-      response = request(method: :post, path: path, params: params)
-      JSON.parse(response.body)
+      request(method: :post, path: path, params: params)
     end
 
     private
