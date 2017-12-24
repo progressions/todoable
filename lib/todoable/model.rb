@@ -23,16 +23,24 @@ module Todoable
       attributes[key]
     end
 
-    def name=(value)
-      attributes["name"] = value
-    end
-
     def name
       attributes["name"]
     end
 
     def delete!
       self.class.delete(self)
+    end
+
+    def delete
+      delete!
+    rescue StandardError => e
+      false
+    end
+
+    def save
+      save!
+    rescue StandardError => e
+      false
     end
   end
 end

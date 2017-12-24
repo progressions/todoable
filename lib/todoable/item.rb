@@ -1,7 +1,13 @@
 module Todoable
   autoload :Model, 'todoable/model'
 
-  # Module to handle querying and creation of list items.
+  # Class to represent a Todoable Item object, and to encapsulate
+  # querying and updating Item objects.
+  #
+  # @attr [String] id id of the List on the Todoable server
+  # @attr [String] list_id id of the List to which this Item belongs
+  # @attr [String] name name of the Item
+  # @attr [Hash] attributes of the original Item object
   #
   class Item
     include Model

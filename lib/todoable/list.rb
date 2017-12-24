@@ -4,6 +4,10 @@ module Todoable
   # Class to represent a Todoable List object, and to encapsulate
   # querying and updating List objects.
   #
+  # @attr [String] id of the List on the Todoable server
+  # @attr [String] name name of the List
+  # @attr [Hash] attributes of the original List object
+  #
   class List
     include Model
 
@@ -47,7 +51,7 @@ module Todoable
     def reload
       @items = nil
 
-      initialize(self.class.get(self))
+      initialize(self.class.get(self).attributes)
     end
 
     # Saves changes to this List to the Todoable server.
@@ -58,12 +62,27 @@ module Todoable
     #   list #=>
     #     #<Todoable::List @name="Shopping", @src="...", @id="...">
     #   list.name = "Grocery Shopping" # Don't save this change
-    #   list.save!
+    #   list.save
     #   list.reload #=>
     #     #<Todoable::List @name="Grocery Shopping", @src="...", @id="...">
     #
     def save!
       self.class.update(id: id, name: name)
+
+      self.reload
+    end
+
+    # Changes the name of the in-memory List object.
+    #
+    # Use `save` after changing it to persist the change to the
+    # Todoable server.
+    #
+    # @return [String] new name
+    #
+    # @param [string] value the new name for this List object
+    #
+    def name=(value)
+      attributes["name"] = value
     end
 
     class << self
@@ -168,8 +187,7 @@ module Todoable
             'name' => name
           }
         }
-        attributes = client.request(method: :patch, path: path, params: params)
-        Todoable::List.new(attributes)
+        client.request(method: :patch, path: path, params: params)
       end
 
       # Deletes a List from the Todoable server.
