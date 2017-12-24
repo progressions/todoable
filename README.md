@@ -32,4 +32,11 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/todoable.
+Bug reports and pull requests are welcome on GitHub at https://github.com/progressions/todoable.
+
+## Documentation
+
+Documentation can be generated with:
+
+    $ yard doc -m markdown
+
