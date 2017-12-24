@@ -19,7 +19,7 @@ module Todoable
             'name' => name
           }
         }
-        client.post(path: 'list', params: params)
+        client.post(path: 'lists', params: params)
       end
 
       def get(id:)

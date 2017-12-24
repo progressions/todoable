@@ -8,10 +8,6 @@ module Todoable
     class Unauthorized < StandardError; end
     class UnprocessableEntity < StandardError; end
 
-    # http://todoable.teachable.tech/api/
-    # username = "progressions@gmail.com"
-    # password = "todoable"
-    #
     def initialize(username: 'progressions@gmail.com', password: 'todoable')
       @username = username
       @password = password
@@ -38,14 +34,16 @@ module Todoable
 
     def handle_response(response)
       case response.code
+      when 204
+        true
       when 200..300
         begin
           JSON.parse(response.body)
         rescue JSON::ParserError
-          response.body
+          true
         end
       when 404
-        raise Todoable::Client::NotFound
+        raise Todoable::Client::NotFound.new
       when 422
         errors = JSON.parse(response.body)
 
@@ -71,7 +69,7 @@ module Todoable
     # http://todoable.teachable.tech/api/authenticate
     #
     def authenticate
-      if expires_at.nil? || Date.now > expires_at
+      if expires_at.nil? || DateTime.now > expires_at
         url = "#{@base_uri}/authenticate"
         response = RestClient::Request.execute(
           method: :post,
