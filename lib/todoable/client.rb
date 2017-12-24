@@ -32,20 +32,24 @@ module Todoable
       RestClient::Request.execute(
         method: method, url: uri, payload: params.to_json, headers: headers
       ) do |response|
-        case response.code
-        when 200..300
-          begin
-            JSON.parse(response.body)
-          rescue JSON::ParserError
-            response.body
-          end
-        when 404
-          raise Todoable::Client::NotFound.new
-        when 422
-          errors = JSON.parse(response.body)
+        handle_response(response)
+      end
+    end
 
-          raise Todoable::Client::UnprocessableEntity.new(errors)
+    def handle_response(response)
+      case response.code
+      when 200..300
+        begin
+          JSON.parse(response.body)
+        rescue JSON::ParserError
+          response.body
         end
+      when 404
+        raise Todoable::Client::NotFound
+      when 422
+        errors = JSON.parse(response.body)
+
+        raise Todoable::Client::UnprocessableEntity.new(errors)
       end
     end
 
