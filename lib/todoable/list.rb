@@ -9,10 +9,10 @@ module Todoable
 
     # Returns the items belonging to this List.
     #
-    # @return [Array] an Array of Todoable::Item objects
+    # @return [Array<Item>] an Array of Todoable::Item objects
     #
     # @example
-    #   list.items =>
+    #   list.items #=>
     #     [#<Todoable::Item @name="get dog food", @finished_at=nil, @src="...", @id="...", @list_id="...">,
     #     #<Todoable::Item @name="get cat food", @finished_at=nil, @src="...", @id="...", @list_id="...">,
     #     #<Todoable::Item @name="adopt dog", @finished_at=nil, @src="...", @id="...", @list_id="...">,
@@ -33,6 +33,17 @@ module Todoable
 
     # Reloads this List from the Todoable server.
     #
+    # Any changes made to this List will be lost if not saved.
+    #
+    # @return [Item] a Todoable::Item
+    #
+    # @example
+    #   list #=>
+    #     #<Todoable::List @name="Shopping", @src="...", @id="...">
+    #   list.name = "Grocery Shopping" # Don't save this change
+    #   list.reload #=>
+    #     #<Todoable::List @name="Shopping", @src="...", @id="...">
+    #
     def reload
       @items = nil
 
@@ -41,6 +52,16 @@ module Todoable
 
     # Saves changes to this List to the Todoable server.
     #
+    # @return [Boolean] `true` if List saved successfully
+    #
+    # @example
+    #   list #=>
+    #     #<Todoable::List @name="Shopping", @src="...", @id="...">
+    #   list.name = "Grocery Shopping" # Don't save this change
+    #   list.save!
+    #   list.reload #=>
+    #     #<Todoable::List @name="Grocery Shopping", @src="...", @id="...">
+    #
     def save!
       self.class.update(id: id, name: name)
     end
@@ -48,8 +69,10 @@ module Todoable
     class << self
       # Fetches all available Lists from the Todoable server.
       #
+      # @return [Array<List>] an Array of Todoable::List objects
+      #
       # @example
-      #   Todoable::List.all =>
+      #   Todoable::List.all #=>
       #     [#<Todoable::List @name="Shopping", @src="...", @id="...">,
       #     #<Todoable::List @name="Christmas", @src="...", @id="...">]
       #
@@ -62,6 +85,16 @@ module Todoable
       end
 
       # Creates a new List object with the given name.
+      #
+      # @param [Hash] args the attributes to create the List
+      # @option args [Symbol] :name the name of the new List
+      # @option args [String] :name the name of the new List
+      #
+      # @return [List] a Todoable::List object
+      #
+      # @example
+      #   Todoable::List.create(name: "Birthday List") #=>
+      #     #<Todoable::List @name="Birthday List", @src="...", @id="...">
       #
       def create(args={})
         name = args[:name] || args["name"]
@@ -78,8 +111,19 @@ module Todoable
 
       # Fetches a List from the Todoable server.
       #
+      # @param [Hash|List] args arguments to identify the List; optionally, a List object can be passed
+      # @option args [Symbol] :id the id of the List
+      # @option args [String] :id the id of the List
+      #
+      # @return [List] a Todoable::List object
+      #
+      # @example
+      #   Todoable::List.get(id: "41cf70a2-...") #=>
+      #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
+      #
       def get(args={})
-        id = args["id"]
+        id = args["id"] || args[:id]
+
         list = client.get(path: "lists/#{id}")
         list["id"] = id
 
@@ -88,17 +132,58 @@ module Todoable
 
       # Saves changes to a given List to the Todoable server.
       #
-      def update(id:, name:)
+      # Takes either an arguments Hash, including the id of the List and
+      # its new name, or a List object itself.
+      #
+      # If a List object is passed, the name will be updated to the current name
+      # of the List object.
+      #
+      # @param [Hash|List] args arguments to identify the List; optionally, a List object
+      # can be passed
+      # @option args [Symbol] :id the id of the List
+      # @option args [String] :id the id of the List
+      # @option args [Symbol] :name the new name of the List
+      # @option args [String] :name the new name of the List
+      #
+      # @return [List] a Todoable::List object
+      #
+      # @example
+      #   Todoable::List.update(id: "41cf70a2-...", name: "Jenny's Birthday List") #=>
+      #     #<Todoable::List @name="Jenny's Birthday List", @src="...", @id="41cf70a2-...">
+      #
+      # @example
+      #   list = Todoable::List.get(id: "41cf70a2-...") #=>
+      #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
+      #   list.name = "Jenny's Birthday List"
+      #   Todoable::List.update(list) #=>
+      #     #<Todoable::List @name="Jenny's Birthday List", @src="...", @id="41cf70a2-...">
+      #
+      def update(args={})
+        id = args["id"] || args[:id]
+        name = args["name"] || args[:name]
+
         path = "lists/#{id}"
         params = {
           'list' => {
             'name' => name
           }
         }
-        client.request(method: :patch, path: path, params: params)
+        attributes = client.request(method: :patch, path: path, params: params)
+        Todoable::List.new(attributes)
       end
 
       # Deletes a List from the Todoable server.
+      #
+      # @param [Hash|List] args arguments to identify the List; optionally, a List object
+      # can be passed
+      # @option args [Symbol] :id the id of the List
+      # @option args [String] :id the id of the List
+      #
+      # @example
+      #   Todoable::List.delete(id: "41cf70a2-...") #=>
+      #     true
+      #   Todoable::List.get(id: "41cf70a2-...") #=>
+      #     Todoable::NotFound
       #
       def delete(args={})
         id = args["id"]
