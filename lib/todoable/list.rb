@@ -1,32 +1,17 @@
 module Todoable
+  autoload :Model, 'todoable/model'
+
   # Module to handle querying and creation of lists.
   #
   class List
-    attr_accessor :src, :id, :attributes
-
-    def initialize(attributes={})
-      @attributes = attributes
-      attributes.each do |key, value|
-        self.instance_variable_set("@#{key}", value)
-      end
-    end
-
-    def [](key)
-      attributes[key]
-    end
-
-    def name=(value)
-      attributes["name"] = value
-    end
-
-    def name
-      attributes["name"]
-    end
+    include Model
 
     def items
       unless @items
-        response = self.class.get(id: id)
+        response = self.class.get(self)
         @items = Array(response["items"]).map do |item|
+          item["list_id"] = @id
+
           Item.new(item)
         end
       end
@@ -37,18 +22,14 @@ module Todoable
     def reload
       @items = nil
 
-      self
+      self.class.get(self)
     end
 
-    def save
+    def save!
       self.class.update(id: id, name: name)
     end
 
     class << self
-      def client
-        @client ||= Todoable::Client.new
-      end
-
       def first
         all.first
       end
@@ -61,7 +42,9 @@ module Todoable
         end
       end
 
-      def create(name:)
+      def create(args={})
+        name = args[:name] || args["name"]
+
         params = {
           'list' => {
             'name' => name
@@ -72,7 +55,10 @@ module Todoable
 
       def get(args={})
         id = args["id"]
-        client.get(path: "lists/#{id}")
+        list = client.get(path: "lists/#{id}")
+        list["id"] = id
+
+        Todoable::List.new(list)
       end
 
       def update(id:, name:)
@@ -85,7 +71,9 @@ module Todoable
         client.request(method: :patch, path: path, params: params)
       end
 
-      def delete(id:)
+      def delete(args={})
+        id = args["id"]
+
         path = "lists/#{id}"
         client.request(method: :delete, path: path)
       end

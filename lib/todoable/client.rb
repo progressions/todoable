@@ -1,12 +1,12 @@
 module Todoable
+  class NotFound < StandardError; end
+  class Unauthorized < StandardError; end
+  class UnprocessableEntity < StandardError; end
+
   # Class to handle making requests from the Todoable API.
   #
   class Client
     attr_reader :token, :expires_at
-
-    class NotFound < StandardError; end
-    class Unauthorized < StandardError; end
-    class UnprocessableEntity < StandardError; end
 
     def initialize(username: 'progressions@gmail.com', password: 'todoable')
       @username = username
@@ -42,12 +42,14 @@ module Todoable
         rescue JSON::ParserError
           true
         end
+      when 401
+        raise Todoable::Unauthorized.new
       when 404
-        raise Todoable::Client::NotFound.new
+        raise Todoable::NotFound.new
       when 422
         errors = JSON.parse(response.body)
 
-        raise Todoable::Client::UnprocessableEntity.new(errors)
+        raise Todoable::UnprocessableEntity.new(errors)
       end
     end
 
@@ -82,11 +84,9 @@ module Todoable
 
         token = body['token']
         expires_at = Date.parse(body['expires_at'])
-
-        [token, expires_at]
-      else
-        [@token, @expires_at]
       end
+
+      [token, expires_at]
     end
   end
 end

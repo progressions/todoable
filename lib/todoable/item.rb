@@ -1,20 +1,30 @@
 module Todoable
+  autoload :Model, 'todoable/model'
+
   # Module to handle querying and creation of list items.
   #
   class Item
-    attr_accessor :name, :src, :id
+    include Model
 
-    def initialize(attributes={})
-      attributes.each do |key, value|
-        self.instance_variable_set("@#{key}", value)
+    attr_accessor :id, :list_id, :name, :finished_at
+
+    def finish
+      self.class.finish(self)
+    end
+
+    def list
+      unless @list
+        @list = Todoable::List.get("id" => list_id)
       end
+
+      @list
+    end
+
+    def finished?
+      !!finished_at
     end
 
     class << self
-      def client
-        @client ||= Todoable::Client.new
-      end
-
       def create(list_id:, name:)
         path = "lists/#{list_id}/items"
         params = {
@@ -25,12 +35,18 @@ module Todoable
         client.post(path: path, params: params)
       end
 
-      def finish(list_id:, id:)
+      def finish(args={})
+        list_id = args["list_id"]
+        id = args["id"]
+
         path = "lists/#{list_id}/items/#{id}/finish"
         client.request(method: :put, path: path)
       end
 
-      def delete(list_id:, id:)
+      def delete(args={})
+        list_id = args["list_id"]
+        id = args["id"]
+
         path = "lists/#{list_id}/items/#{id}"
         client.request(method: :delete, path: path)
       end
