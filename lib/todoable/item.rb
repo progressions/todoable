@@ -1,7 +1,15 @@
 module Todoable
   # Module to handle querying and creation of list items.
   #
-  module Item
+  class Item
+    attr_accessor :name, :src, :id
+
+    def initialize(attributes={})
+      attributes.each do |key, value|
+        self.instance_variable_set("@#{key}", value)
+      end
+    end
+
     class << self
       def client
         @client ||= Todoable::Client.new
