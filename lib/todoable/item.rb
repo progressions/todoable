@@ -1,4 +1,6 @@
 module Todoable
+  # Module to handle querying and creation of list items.
+  #
   module Item
     class << self
       def client
@@ -8,8 +10,8 @@ module Todoable
       def create(list_id:, name:)
         path = "lists/#{list_id}/items"
         params = {
-          "item" => {
-            "name" => name
+          'item' => {
+            'name' => name
           }
         }
         client.post(path: path, params: params)

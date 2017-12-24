@@ -1,4 +1,6 @@
 module Todoable
+  # Module to handle querying and creation of lists.
+  #
   module List
     class << self
       def client
@@ -6,18 +8,18 @@ module Todoable
       end
 
       def all
-        response = client.get(path: "lists")
+        response = client.get(path: 'lists')
 
-        response["lists"]
+        response['lists']
       end
 
       def create(name:)
         params = {
-          "list" => {
-            "name" => name
+          'list' => {
+            'name' => name
           }
         }
-        client.post(path: "listz", params: params)
+        client.post(path: 'list', params: params)
       end
 
       def get(id:)
@@ -27,8 +29,8 @@ module Todoable
       def update(id:, name:)
         path = "lists/#{id}"
         params = {
-          "list" => {
-            "name" => name
+          'list' => {
+            'name' => name
           }
         }
         client.request(method: :patch, path: path, params: params)
