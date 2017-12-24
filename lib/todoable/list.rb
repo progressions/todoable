@@ -22,7 +22,7 @@ module Todoable
     def reload
       @items = nil
 
-      self.class.get(self)
+      initialize(self.class.get(self))
     end
 
     def save!
@@ -50,7 +50,9 @@ module Todoable
             'name' => name
           }
         }
-        client.post(path: 'lists', params: params)
+        attributes = client.post(path: 'lists', params: params)
+
+        Todoable::List.new(attributes)
       end
 
       def get(args={})

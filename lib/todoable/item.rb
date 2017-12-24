@@ -10,6 +10,9 @@ module Todoable
 
     def finish
       self.class.finish(self)
+
+      attributes = list.reload.items.select { |i| i["id"] == self["id"] }.first
+      initialize(attributes)
     end
 
     def list
@@ -32,7 +35,10 @@ module Todoable
             'name' => name
           }
         }
-        client.post(path: path, params: params)
+        attributes = client.post(path: path, params: params)
+
+        attributes["list_id"] = list_id
+        Todoable::Item.new(attributes)
       end
 
       def finish(args={})
