@@ -6,13 +6,15 @@ module Todoable
   # Class to handle making requests from the Todoable API.
   #
   class Client
+    BASE_URI = 'http://todoable.teachable.tech/api/'
+
     attr_reader :token
 
-    def initialize(username:, password:)
-      @username = username
-      @password = password
+    def initialize(username: nil, password: nil, base_uri: nil)
+      @username = username || Todoable.configuration.username
+      @password = password || Todoable.configuration.password
 
-      @base_uri = 'http://todoable.teachable.tech/api/'
+      @base_uri ||= Todoable.configuration.base_uri || BASE_URI
     end
 
     def request(method: :get, path:, params: {})
