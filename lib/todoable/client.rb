@@ -10,7 +10,14 @@ module Todoable
 
     attr_reader :token
 
+    autoload :Lists, 'todoable/client/lists'
+
+    include Lists
+
     def initialize(username: nil, password: nil, base_uri: nil)
+      username = "progressions@gmail.com"
+      password = "todoable"
+
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
 

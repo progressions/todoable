@@ -4,7 +4,6 @@ require 'date'
 
 require 'todoable/version'
 
-# :nodoc:
 module Todoable
   autoload :Client, 'todoable/client'
   autoload :List, 'todoable/list'

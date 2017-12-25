@@ -96,9 +96,9 @@ module Todoable
       #     #<Todoable::List @name="Christmas", @src="...", @id="...">]
       #
       def all
-        response = client.get(path: 'lists')
+        lists = client.lists
 
-        Array(response['lists']).map do |list|
+        Array(lists).map do |list|
           Todoable::List.new(list)
         end
       end
@@ -116,14 +116,7 @@ module Todoable
       #     #<Todoable::List @name="Birthday List", @src="...", @id="...">
       #
       def create(args={})
-        name = args[:name] || args["name"]
-
-        params = {
-          'list' => {
-            'name' => name
-          }
-        }
-        attributes = client.post(path: 'lists', params: params)
+        attributes = client.create_list(args)
 
         Todoable::List.new(attributes)
       end
@@ -141,10 +134,7 @@ module Todoable
       #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
       #
       def get(args={})
-        id = args["id"] || args[:id]
-
-        list = client.get(path: "lists/#{id}")
-        list["id"] = id
+        list = client.get_list(args)
 
         Todoable::List.new(list)
       end
@@ -178,16 +168,9 @@ module Todoable
       #     #<Todoable::List @name="Jenny's Birthday List", @src="...", @id="41cf70a2-...">
       #
       def update(args={})
-        id = args["id"] || args[:id]
-        name = args["name"] || args[:name]
+        list = client.update_list(args)
 
-        path = "lists/#{id}"
-        params = {
-          'list' => {
-            'name' => name
-          }
-        }
-        client.request(method: :patch, path: path, params: params)
+        Todoable::List.new(list)
       end
 
       # Deletes a List from the Todoable server.
@@ -204,10 +187,7 @@ module Todoable
       #     Todoable::NotFound
       #
       def delete(args={})
-        id = args["id"]
-
-        path = "lists/#{id}"
-        client.request(method: :delete, path: path)
+        client.delete(args)
       end
     end
   end
