@@ -51,7 +51,10 @@ module Todoable
     def reload
       @items = nil
 
-      initialize(self.class.get(self).attributes)
+      attributes = self.class.client.get_list(self)
+      initialize(attributes)
+
+      self
     end
 
     # Saves changes to this List to the Todoable server.
@@ -82,7 +85,7 @@ module Todoable
     # @param [string] value the new name for this List object
     #
     def name=(value)
-      attributes["name"] = value
+      attributes[:name] = value
     end
 
     class << self

@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'json'
 require 'date'
+require 'active_support/core_ext/hash/indifferent_access'
 
 require 'todoable/version'
 

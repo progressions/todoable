@@ -2,7 +2,7 @@ module Todoable
   # Encapsulate treating these classes as models.
   #
   module Model
-    attr_accessor :id, :attributes
+    attr_accessor :id, :attributes, :name
 
     def self.included(base)
       base.class_eval do
@@ -13,7 +13,11 @@ module Todoable
     end
 
     def initialize(attributes={})
-      @attributes = attributes
+      set_attributes(attributes)
+    end
+
+    def set_attributes(attributes={})
+      @attributes = HashWithIndifferentAccess.new(attributes)
       attributes.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
@@ -21,10 +25,6 @@ module Todoable
 
     def [](key)
       attributes[key]
-    end
-
-    def name
-      attributes["name"]
     end
 
     def delete!

@@ -14,17 +14,9 @@ RSpec.describe Todoable::List do
     Todoable::List.instance_variable_set("@client", nil)
   end
 
-  context 'new' do
+  context '.new' do
     it 'creates a List' do
       expect(list.name).to eq("Christmas List")
-    end
-  end
-
-  context '#save' do
-    it 'saves the List' do
-      expect(mock_client).to receive(:update_list).and_return(list_attributes)
-      list.name = 'Birthday List'
-      list.save
     end
   end
 
@@ -37,6 +29,45 @@ RSpec.describe Todoable::List do
       expect(mock_client).to receive(:get_list).and_return(list_attributes)
       list = Todoable::List.get(id: '123-abc')
       expect(list.items.count).to eq(3)
+    end
+  end
+
+  context '#reload' do
+    it 'reloads an existing List from the server' do
+      list.name = "Birthday List"
+      expect(mock_client).to receive(:get_list).and_return(list_attributes)
+      expect(list.reload.name).to eq("Christmas List")
+    end
+
+    it "can't reload a new List" do
+      list = Todoable::List.new(name: "Birthday List")
+      expect(list.name).to eq("Birthday List")
+    end
+  end
+
+  context '#save' do
+    it 'saves the List' do
+      expect(mock_client).to receive(:update_list).and_return(list_attributes)
+      list.name = 'Birthday List'
+      list.save
+    end
+
+    it "returns false on failure" do
+      expect(mock_client).to receive(:update_list).and_raise(Todoable::UnprocessableEntity)
+      expect { list.save }.not_to raise_exception
+    end
+  end
+
+  context '#save!' do
+    it 'saves the List' do
+      expect(mock_client).to receive(:update_list).and_return(list_attributes)
+      list.name = 'Birthday List'
+      list.save!
+    end
+
+    it "returns false on failure" do
+      expect(mock_client).to receive(:update_list).and_raise(Todoable::UnprocessableEntity)
+      expect { list.save! }.to raise_exception(Todoable::UnprocessableEntity)
     end
   end
 end
