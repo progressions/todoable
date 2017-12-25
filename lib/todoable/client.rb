@@ -6,9 +6,9 @@ module Todoable
   # Class to handle making requests from the Todoable API.
   #
   class Client
-    attr_reader :token, :expires_at
+    attr_reader :token
 
-    def initialize(username: 'progressions@gmail.com', password: 'todoable')
+    def initialize(username:, password:)
       @username = username
       @password = password
 
@@ -32,6 +32,16 @@ module Todoable
       end
     end
 
+    def get(path:, params: {})
+      request(method: :get, path: path, params: params)
+    end
+
+    def post(path:, params: {})
+      request(method: :post, path: path, params: params)
+    end
+
+    private
+
     def handle_response(response)
       case response.code
       when 204
@@ -53,16 +63,6 @@ module Todoable
       end
     end
 
-    def get(path:, params: {})
-      request(method: :get, path: path, params: params)
-    end
-
-    def post(path:, params: {})
-      request(method: :post, path: path, params: params)
-    end
-
-    private
-
     # curl \
     # -u progressions@gmail.com:todoable \
     # -H "Accept: application/json" \
@@ -71,7 +71,7 @@ module Todoable
     # http://todoable.teachable.tech/api/authenticate
     #
     def authenticate
-      if expires_at.nil? || DateTime.now > expires_at
+      if @expires_at.nil? || DateTime.now > @expires_at
         url = "#{@base_uri}/authenticate"
         response = RestClient::Request.execute(
           method: :post,
@@ -82,11 +82,11 @@ module Todoable
         )
         body = JSON.parse(response.body)
 
-        token = body['token']
-        expires_at = Date.parse(body['expires_at'])
+        @token = body['token']
+        @expires_at = Date.parse(body['expires_at'])
       end
 
-      [token, expires_at]
+      [@token, @expires_at]
     end
   end
 end

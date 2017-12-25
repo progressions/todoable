@@ -7,7 +7,13 @@ module Todoable
     def self.included(base)
       base.class_eval do
         def self.client
-          @client ||= Todoable::Client.new
+          username = 'progressions@gmail.com'
+          password = 'todoable'
+
+          @client ||= Todoable::Client.new(
+            username: username,
+            password: password,
+          )
         end
       end
     end

@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'todoable'
+require_relative 'support/mock_client'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

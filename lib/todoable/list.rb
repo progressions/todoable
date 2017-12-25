@@ -28,7 +28,7 @@ module Todoable
         @items = Array(response["items"]).map do |item|
           item["list_id"] = @id
 
-          Item.new(item)
+          Todoable::Item.new(item)
         end
       end
 
@@ -99,7 +99,7 @@ module Todoable
         response = client.get(path: 'lists')
 
         Array(response['lists']).map do |list|
-          List.new(list)
+          Todoable::List.new(list)
         end
       end
 
