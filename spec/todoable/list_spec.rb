@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Todoable::List do
-  let(:list_attributes) { {'name'=>'Christmas List', 'src'=>'http://todoable.teachable.tech/api/lists/d8443c22-5833-479d-bc5a-9866fe1fc264', 'id'=>'d8443c22-5833-479d-bc5a-9866fe1fc264'} }
+  let(:list_attributes) { {'name'=>'Christmas List', 'src'=>'http://todoable.teachable.tech/api/lists/123-abc', 'id'=>'123-abc'} }
   let(:list) { Todoable::List.new(list_attributes) }
   let(:mock_client) { double('mock client', get_list: list_attributes) }
 
@@ -17,6 +17,50 @@ RSpec.describe Todoable::List do
   context '.new' do
     it 'creates a List' do
       expect(list.name).to eq("Christmas List")
+    end
+  end
+
+  context '.all' do
+    let(:lists_attributes) { [
+      {'name'=>'Christmas List', 'src'=>'http://todoable.teachable.tech/api/lists/123-abc', 'id'=>'123-abc'},
+      {'name'=>'Birthday List', 'src'=>'http://todoable.teachable.tech/api/lists/456-def', 'id'=>'456-def'}
+    ] }
+
+    it 'queries all lists and turns them into List objects' do
+      expect(mock_client).to receive(:lists).and_return(lists_attributes)
+      lists = Todoable::List.all
+
+      expect(lists[0].name).to eq("Christmas List")
+      expect(lists[1].name).to eq("Birthday List")
+    end
+  end
+
+  context '.create' do
+    it 'creates a List object from a Hash' do
+      expect(list.name).to eq("Christmas List")
+    end
+  end
+
+  context '.get' do
+    it 'fetches a List from the server and converts it to a List object' do
+      expect(mock_client).to receive(:get_list).with(id: '123-abc').and_return(list_attributes)
+      list = Todoable::List.get(id: '123-abc')
+      expect(list.name).to eq("Christmas List")
+    end
+  end
+
+  context '.update' do
+    it 'updates a List on the Todoable server' do
+      expect(mock_client).to receive(:update_list).with(id: "123-abc", name: "Birthday List").and_return(list_attributes.merge(name: "Birthday List"))
+      list = Todoable::List.update(id: '123-abc', name: 'Birthday List')
+      expect(list.name).to eq("Birthday List")
+    end
+  end
+
+  context '.delete' do
+    it 'deletes the List from the Todoable server' do
+      expect(mock_client).to receive(:delete_list).with(id: '123-abc').and_return("")
+      Todoable::List.delete(id: '123-abc')
     end
   end
 
@@ -54,7 +98,7 @@ RSpec.describe Todoable::List do
 
     it "returns false on failure" do
       expect(mock_client).to receive(:update_list).and_raise(Todoable::UnprocessableEntity)
-      expect { list.save }.not_to raise_exception
+      expect(list.save).to be_falsey
     end
   end
 
@@ -68,6 +112,38 @@ RSpec.describe Todoable::List do
     it "returns false on failure" do
       expect(mock_client).to receive(:update_list).and_raise(Todoable::UnprocessableEntity)
       expect { list.save! }.to raise_exception(Todoable::UnprocessableEntity)
+    end
+  end
+
+  context '#delete' do
+    it 'deletes the List' do
+      expect(mock_client).to receive(:delete_list).with(list).and_return("")
+      expect(list.delete).to be_truthy
+    end
+
+    it 'returns false on failure' do
+      expect(mock_client).to receive(:delete_list).with(list).and_raise(Todoable::NotFound)
+      expect(list.delete).to be_falsey
+    end
+  end
+
+  context '#delete!' do
+    it 'deletes the List' do
+      expect(mock_client).to receive(:delete_list).with(list).and_return("")
+      expect(list.delete!).to be_truthy
+    end
+
+    it 'raises exception on failure' do
+      expect(mock_client).to receive(:delete_list).with(list).and_raise(Todoable::NotFound)
+      expect { list.delete! }.to raise_exception(Todoable::NotFound)
+    end
+  end
+
+  context '#name=' do
+    it 'updates the name of the List' do
+      list = Todoable::List.new(name: "Birthday")
+      list.name = "Christmas"
+      expect(list.name).to eq("Christmas")
     end
   end
 end

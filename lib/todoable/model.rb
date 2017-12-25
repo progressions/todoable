@@ -24,7 +24,7 @@ module Todoable
     end
 
     def [](key)
-      attributes[key]
+      attributes[key.to_sym]
     end
 
     def delete!

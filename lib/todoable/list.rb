@@ -85,7 +85,7 @@ module Todoable
     # @param [string] value the new name for this List object
     #
     def name=(value)
-      attributes[:name] = value
+      @name = attributes[:name] = value
     end
 
     class << self
@@ -190,7 +190,7 @@ module Todoable
       #     Todoable::NotFound
       #
       def delete(args={})
-        client.delete(args)
+        client.delete_list(args)
       end
     end
   end
