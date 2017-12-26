@@ -63,6 +63,11 @@ RSpec.describe Todoable::Item do
       expect(mock_client).to receive(:finish_item).with(list_id: "123-abc", id: '987-zyx').and_return("get dog food finished")
       item.finish!
     end
+
+    it "raises exception if Item is already finished" do
+      item.finished_at = "2017-12-26T01:32:22.268Z"
+      expect { item.finish! }.to raise_exception(Todoable::ItemAlreadyFinished)
+    end
   end
 
   describe "#finished?" do

@@ -2,7 +2,11 @@ module Todoable
   class NotFound < StandardError; end
   class Unauthorized < StandardError; end
   class UnprocessableEntity < StandardError; end
-  class ItemAlreadyFinished < StandardError; end
+  class ItemAlreadyFinished < StandardError
+    def initialize(item)
+      super("Item: `#{item.name}` is already finished")
+    end
+  end
 
   # Class to handle making requests from the Todoable API.
   #

@@ -40,7 +40,7 @@ module Todoable
     #     finished
     #
     def finish!
-      raise ItemAlreadyFinished.new("Item: `#{name}` is already finished") if finished?
+      raise ItemAlreadyFinished.new(self) if finished?
 
       if self.class.finish(list_id: list_id, id: id)
         attributes = list.reload.attributes["items"].find { |i| i["id"] == self["id"] }
