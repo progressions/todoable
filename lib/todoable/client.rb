@@ -11,6 +11,7 @@ module Todoable
     BASE_URI = 'http://todoable.teachable.tech/api'
 
     autoload :Lists, 'todoable/client/lists'
+    autoload :Items, 'todoable/client/items'
 
     include Lists
 

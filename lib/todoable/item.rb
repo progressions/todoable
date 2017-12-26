@@ -35,32 +35,16 @@ module Todoable
 
     class << self
       def create(list_id:, name:)
-        path = "lists/#{list_id}/items"
-        params = {
-          'item' => {
-            'name' => name
-          }
-        }
-        attributes = client.post(path: path, params: params)
-
-        attributes["list_id"] = list_id
+        attributes = client.create_item(list_id: list_id, name: name)
         Todoable::Item.new(attributes)
       end
 
       def finish(args={})
-        list_id = args["list_id"]
-        id = args["id"]
-
-        path = "lists/#{list_id}/items/#{id}/finish"
-        client.request(method: :put, path: path)
+        client.finish(args)
       end
 
       def delete(args={})
-        list_id = args["list_id"]
-        id = args["id"]
-
-        path = "lists/#{list_id}/items/#{id}"
-        client.request(method: :delete, path: path)
+        client.delete(args)
       end
     end
   end
