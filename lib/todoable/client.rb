@@ -2,6 +2,7 @@ module Todoable
   class NotFound < StandardError; end
   class Unauthorized < StandardError; end
   class UnprocessableEntity < StandardError; end
+  class ItemAlreadyFinished < StandardError; end
 
   # Class to handle making requests from the Todoable API.
   #
