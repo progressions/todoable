@@ -42,14 +42,23 @@ module Todoable
     def finish!
       raise ItemAlreadyFinished.new("Item: `#{name}` is already finished") if finished?
 
-      if self.class.finish(self)
-        attributes = list.reload.items.select { |i| i["id"] == self["id"] }.first
+      if self.class.finish(list_id: list_id, id: id)
+        attributes = list.reload.attributes["items"].select { |i| i["id"] == self["id"] }.first
         initialize(attributes)
 
         true
       else
         false
       end
+    end
+
+    # Returns true if this Item object has a `finished_at` date.
+    #
+    # @return [Boolean] returns true if this Item object has a
+    # `finished_at` date
+    #
+    def finished?
+      !finished_at.nil?
     end
 
     # Returns the List object associated with this Item. Lazy-loads the
@@ -64,16 +73,7 @@ module Todoable
     def list
       return nil unless list_id
 
-      @list ||= Todoable::List.get("id" => list_id)
-    end
-
-    # Returns true if this Item object has a `finished_at` date.
-    #
-    # @return [Boolean] returns true if this Item object has a
-    # `finished_at` date
-    #
-    def finished?
-      !finished_at.nil?
+      @list ||= Todoable::List.get(id: list_id)
     end
 
     class << self
@@ -92,10 +92,7 @@ module Todoable
       #     #<Todoable::Item @name="get dog food", @finished_at=nil, @src="...",
       #     @list_id="123-abc", @id="...">
       #
-      def create(args = {})
-        list_id = args[:list_id] || args["list_id"]
-        name = args[:name] || args["name"]
-
+      def create(list_id:, name:)
         attributes = client.create_item(list_id: list_id, name: name)
         Todoable::Item.new(attributes)
       end
@@ -115,8 +112,8 @@ module Todoable
       #   Todoable::Item.finish(list_id: "123-abc", id: "987-zyx") #=>
       #     true
       #
-      def finish(args = {})
-        client.finish_item(args)
+      def finish(list_id:, id:)
+        client.finish_item(list_id: list_id, id: id)
       end
 
       # Deletes an Item from the Todoable server.
@@ -131,8 +128,8 @@ module Todoable
       #   Todoable::Item.delete(list_id: "123-abc", id: "987-zyx") #=>
       #     true
       #
-      def delete(args = {})
-        client.delete(args)
+      def delete(list_id:, id:)
+        client.delete_item(list_id: list_id, id: id)
       end
     end
   end

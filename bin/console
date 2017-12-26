@@ -10,5 +10,13 @@ require "todoable"
 # require "pry"
 # Pry.start
 
+Todoable.configure do |c|
+  c.username = ENV["TODOABLE_USERNAME"]
+  c.password = ENV["TODOABLE_PASSWORD"]
+end
+
+require 'todoable/list'
+require 'todoable/item'
+
 require "irb"
 IRB.start(__FILE__)

@@ -23,16 +23,15 @@ module Todoable
     #     #<Todoable::Item @name="adopt cat", @finished_at=nil, @src="...", @id="...", @list_id="...">]
     #
     def items
-      unless @items
-        response = self.class.get(self)
-        @items = Array(response["items"]).map do |item|
-          item["list_id"] = @id
+      reload unless attributes["items"]
 
-          Todoable::Item.new(item)
-        end
+      @_items ||= Array(attributes["items"]).map do |item|
+        item["list_id"] = @id
+
+        Todoable::Item.new(item)
       end
 
-      @items
+      @_items
     end
 
     # Reloads this List from the Todoable server.
@@ -51,7 +50,7 @@ module Todoable
     def reload
       @items = nil
 
-      attributes = self.class.client.get_list(self)
+      attributes = self.class.client.get_list(id: id)
       initialize(attributes)
 
       self

@@ -63,9 +63,6 @@ module Todoable
       #     true
       #
       def delete_item(list_id:, id:)
-        list_id = args["list_id"] || args[:list_id]
-        id = args["id"] || args[:id]
-
         path = "lists/#{list_id}/items/#{id}"
         request(method: :delete, path: path)
       end

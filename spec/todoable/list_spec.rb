@@ -1,8 +1,15 @@
 require "spec_helper"
 require "todoable/list"
+require "todoable/item"
 
 RSpec.describe Todoable::List do
-  let(:list_attributes) { {"name" => "Christmas List", "src" => "http://todoable.teachable.tech/api/lists/123-abc", "id" => "123-abc"} }
+  let(:list_attributes) do
+    {
+      "name" => "Christmas List",
+      "src" => "http://todoable.teachable.tech/api/lists/123-abc",
+      "id" => "123-abc"
+    }
+  end
   let(:list) { Todoable::List.new(list_attributes) }
   let(:mock_client) { double("mock client", get_list: list_attributes) }
 
@@ -84,9 +91,15 @@ RSpec.describe Todoable::List do
       }
     end
 
-    it "fetches the List from the API" do
+    it "fetches the List from the API if it's not present" do
+      list = Todoable::List.new(id: "123-abc")
       expect(mock_client).to receive(:get_list).and_return(list_attributes)
+      expect(list.items.count).to eq(2)
+    end
+
+    it "doesn't reload if items exist in attributes" do
       list = Todoable::List.get(id: "123-abc")
+      expect(mock_client).not_to receive(:get_list)
       expect(list.items.count).to eq(2)
     end
   end
