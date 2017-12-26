@@ -22,6 +22,7 @@ module Todoable
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
 
+      # FIXME: This is really ugly.
       @base_uri = base_uri || Todoable.configuration.base_uri || BASE_URI
 
       authenticate

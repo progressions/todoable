@@ -19,10 +19,7 @@ module Todoable
       #     {"name"=>"dog food", "finished_at"=>nil, "src"=>"...",
       #     "id"=>"987-zyx", "list_id"=>"123-abc"}
       #
-      def create_item(args = {})
-        list_id = args[:list_id] || args["list_id"]
-        name = args[:name] || args["name"]
-
+      def create_item(list_id:, name:)
         path = "lists/#{list_id}/items"
         params = {
           "item" => {
@@ -45,10 +42,7 @@ module Todoable
       #   Todoable::Client.finish_item(list_id: "123-abc", id: "987-zyx") #=>
       #     true
       #
-      def finish_item(args = {})
-        list_id = args["list_id"] || args[:list_id]
-        id = args["id"] || args[:id]
-
+      def finish_item(list_id:, id:)
         path = "lists/#{list_id}/items/#{id}/finish"
         request(method: :put, path: path)
       end
@@ -68,10 +62,7 @@ module Todoable
       #   Todoable::Client.delete_item(list_id: "123-abc", id: "987-zyx") #=>
       #     true
       #
-      def delete_item(args = {})
-        list_id = args["list_id"] || args[:list_id]
-        id = args["id"] || args[:id]
-
+      def delete_item(list_id:, id:)
         path = "lists/#{list_id}/items/#{id}"
         request(method: :delete, path: path)
       end

@@ -23,16 +23,15 @@ module Todoable
     #     #<Todoable::Item @name="adopt cat", @finished_at=nil, @src="...", @id="...", @list_id="...">]
     #
     def items
-      unless @items
-        response = self.class.get(self)
-        @items = Array(response["items"]).map do |item|
-          item["list_id"] = @id
+      reload unless attributes["items"]
 
-          Todoable::Item.new(item)
-        end
+      @_items ||= Array(attributes["items"]).map do |item|
+        item["list_id"] = @id
+
+        Todoable::Item.new(item)
       end
 
-      @items
+      @_items
     end
 
     # Reloads this List from the Todoable server.
@@ -51,7 +50,7 @@ module Todoable
     def reload
       @items = nil
 
-      attributes = self.class.client.get_list(self)
+      attributes = self.class.client.get_list(id: id)
       initialize(attributes)
 
       self
@@ -117,8 +116,8 @@ module Todoable
       #   Todoable::List.create(name: "Birthday List") #=>
       #     #<Todoable::List @name="Birthday List", @src="...", @id="...">
       #
-      def create(args = {})
-        attributes = client.create_list(args)
+      def create(name:)
+        attributes = client.create_list(name: name)
 
         Todoable::List.new(attributes)
       end
@@ -135,8 +134,8 @@ module Todoable
       #   Todoable::List.get(id: "41cf70a2-...") #=>
       #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
       #
-      def get(args = {})
-        list = client.get_list(args)
+      def get(id:)
+        list = client.get_list(id: id)
 
         Todoable::List.new(list)
       end
@@ -167,8 +166,8 @@ module Todoable
       #   Todoable::List.update(list) #=>
       #     #<Todoable::List @name="Jenny"s Birthday List", @src="...", @id="41cf70a2-...">
       #
-      def update(args = {})
-        list = client.update_list(args)
+      def update(id:, name:)
+        list = client.update_list(id: id, name: name)
 
         Todoable::List.new(list)
       end
@@ -185,8 +184,8 @@ module Todoable
       #   Todoable::List.get(id: "41cf70a2-...") #=>
       #     Todoable::NotFound
       #
-      def delete(args = {})
-        client.delete_list(args)
+      def delete(id:)
+        client.delete_list(id: id)
       end
     end
   end
