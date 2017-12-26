@@ -32,6 +32,20 @@ RSpec.describe Todoable::Client do
     end
   end
 
+  describe "list methods" do
+    describe "#lists"
+    describe "#create_list"
+    describe "#get_list"
+    describe "#update_list"
+    describe "#delete_list"
+  end
+
+  describe "item methods" do
+    describe "#create_item"
+    describe "#finish_item"
+    describe "#delete_item"
+  end
+
   describe "request" do
     let(:response) { double("response: lists", code: 200, body: lists.to_json) }
     let(:lists) { [{"name"=>"Groceries", "src"=>"...", "id"=>"..."}, {"name"=>"Shopping", "src"=>"...", "id"=>"..."}] }

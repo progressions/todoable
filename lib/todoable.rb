@@ -11,8 +11,8 @@ require "todoable/version"
 module Todoable
   autoload :Configuration, "todoable/configuration"
   autoload :Client, "todoable/client"
-  autoload :List, "todoable/list"
-  autoload :Item, "todoable/item"
+  # autoload :List, "todoable/list"
+  # autoload :Item, "todoable/item"
 
   class << self
     attr_writer :configuration
