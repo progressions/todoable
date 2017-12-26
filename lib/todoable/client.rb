@@ -9,6 +9,7 @@ module Todoable
   class Client
     attr_accessor :expires_at
 
+    # URI of the Todoable API server.
     BASE_URI = 'http://todoable.teachable.tech/api'
 
     autoload :Lists, 'todoable/client/lists'

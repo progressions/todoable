@@ -1,5 +1,9 @@
 module Todoable
+  # This class manages making requests against the Todoable server.
+  #
   class Client
+    # Methods associated with querying the Todoable server around Items.
+    #
     module Items
       # Creates a new Item with the given list_id and name on the Todoable server.
       #

@@ -1,5 +1,7 @@
 module Todoable
   class Client
+    # Methods associated with querying the Todoable server around Lists.
+    #
     module Lists
       # Fetches all available Lists from the Todoable server.
       #
