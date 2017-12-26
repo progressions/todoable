@@ -83,6 +83,21 @@ client.delete_list(id: list["id"])
 
 ```
 
+### Models
+
+To make use of the optional List and Item model classes:
+
+```ruby
+require "todoable/models"
+
+Todoable::List.create(name: "Shopping")
+
+#=> #<Todoable::List:0x007f8e74b6aa80 ...>
+
+```
+
+See the documentation for more on the List and Item model classes.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

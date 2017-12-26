@@ -1,6 +1,4 @@
 module Todoable
-  # This class manages making requests against the Todoable server.
-  #
   class Client
     # Methods associated with querying the Todoable server around Items.
     #
