@@ -59,8 +59,6 @@ module Todoable
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
       @base_uri = base_uri || Todoable.configuration.base_uri
-
-      authenticate
     end
 
     # Make a request against the Todoable API sever.

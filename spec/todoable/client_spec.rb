@@ -24,14 +24,6 @@ RSpec.describe Todoable::Client do
     Timecop.return
   end
 
-  describe "instantiation" do
-    it "authenticates immediately" do
-      expect(RestClient::Request).to receive(:execute).with(auth_request).and_yield(auth_response)
-
-      client
-    end
-  end
-
   describe "list methods" do
     let(:lists_attributes) do
       [
