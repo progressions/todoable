@@ -1,54 +1,45 @@
 module Todoable
+  class NotFound < StandardError; end
+  class Unauthorized < StandardError; end
+  class UnprocessableEntity < StandardError; end
+  class ItemAlreadyFinished < StandardError; end
+
   # Class to handle making requests from the Todoable API.
   #
   class Client
-    attr_reader :token, :expires_at
+    attr_accessor :expires_at
 
-    class NotFound < StandardError; end
-    class Unauthorized < StandardError; end
-    class UnprocessableEntity < StandardError; end
+    # URI of the Todoable API server.
+    BASE_URI = "http://todoable.teachable.tech/api".freeze
 
-    def initialize(username: 'progressions@gmail.com', password: 'todoable')
-      @username = username
-      @password = password
+    autoload :Lists, "todoable/client/lists"
+    autoload :Items, "todoable/client/items"
 
-      @base_uri = 'http://todoable.teachable.tech/api/'
+    include Lists
+    include Items
+
+    def initialize(username: nil, password: nil, base_uri: nil)
+      @username = username || Todoable.configuration.username
+      @password = password || Todoable.configuration.password
+
+      @base_uri = base_uri || Todoable.configuration.base_uri || BASE_URI
+
+      authenticate
     end
 
     def request(method: :get, path:, params: {})
-      @token, @expires_at = authenticate
+      authenticate
 
       uri = "#{@base_uri}/#{path}"
       headers = {
-        'Authorization' => "Token token=\"#{@token}\"",
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json'
+        "Authorization" => "Token token=\"#{@token}\"",
+        "Accept" => "application/json",
+        "Content-Type" => "application/json"
       }
 
       RestClient::Request.execute(
         method: method, url: uri, payload: params.to_json, headers: headers
-      ) do |response|
-        handle_response(response)
-      end
-    end
-
-    def handle_response(response)
-      case response.code
-      when 204
-        true
-      when 200..300
-        begin
-          JSON.parse(response.body)
-        rescue JSON::ParserError
-          true
-        end
-      when 404
-        raise Todoable::Client::NotFound.new
-      when 422
-        errors = JSON.parse(response.body)
-
-        raise Todoable::Client::UnprocessableEntity.new(errors)
-      end
+      ) { |response| handle_response(response) }
     end
 
     def get(path:, params: {})
@@ -61,31 +52,49 @@ module Todoable
 
     private
 
-    # curl \
-    # -u progressions@gmail.com:todoable \
-    # -H "Accept: application/json" \
-    # -H "Content-Type: application/json" \
-    # -X POST \
-    # http://todoable.teachable.tech/api/authenticate
-    #
+    def handle_response(response)
+      case response.code
+      when 204
+        true
+      when 200..300
+        begin
+          JSON.parse(response.body)
+        rescue JSON::ParserError
+          true
+        end
+      when 401
+        raise Todoable::Unauthorized.new
+      when 404
+        raise Todoable::NotFound.new
+      when 422
+        errors = JSON.parse(response.body)
+
+        raise Todoable::UnprocessableEntity.new(errors)
+      end
+    end
+
     def authenticate
-      if expires_at.nil? || DateTime.now > expires_at
-        url = "#{@base_uri}/authenticate"
-        response = RestClient::Request.execute(
-          method: :post,
-          url: url,
-          user: @username,
-          password: @password,
-          headers: { content_type: :json, accept: :json }
-        )
-        body = JSON.parse(response.body)
+      if @expires_at.nil? || DateTime.now > @expires_at
+        response = request_token
 
-        token = body['token']
-        expires_at = Date.parse(body['expires_at'])
+        @token = response["token"]
+        @expires_at = DateTime.parse(response["expires_at"])
+      end
 
-        [token, expires_at]
-      else
-        [@token, @expires_at]
+      [@token, @expires_at]
+    end
+
+    def request_token
+      url = "#{@base_uri}/authenticate"
+
+      RestClient::Request.execute(
+        method: :post,
+        url: url,
+        user: @username,
+        password: @password,
+        headers: { content_type: :json, accept: :json }
+      ) do |response|
+        handle_response(response)
       end
     end
   end
