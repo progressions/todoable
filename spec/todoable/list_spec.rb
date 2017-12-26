@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe Todoable::List do
-  let(:list_attributes) { {"name"=>"Christmas List", "src"=>"http://todoable.teachable.tech/api/lists/123-abc", "id"=>"123-abc"} }
+  let(:list_attributes) { {"name" => "Christmas List", "src" => "http://todoable.teachable.tech/api/lists/123-abc", "id" => "123-abc"} }
   let(:list) { Todoable::List.new(list_attributes) }
   let(:mock_client) { double("mock client", get_list: list_attributes) }
 
@@ -21,10 +21,12 @@ RSpec.describe Todoable::List do
   end
 
   describe ".all" do
-    let(:lists_attributes) { [
-      {"name"=>"Christmas List", "src"=>"http://todoable.teachable.tech/api/lists/123-abc", "id"=>"123-abc"},
-      {"name"=>"Birthday List", "src"=>"http://todoable.teachable.tech/api/lists/456-def", "id"=>"456-def"}
-    ] }
+    let(:lists_attributes) do
+      [
+        {"name" => "Christmas List", "src" => "http://todoable.teachable.tech/api/lists/123-abc", "id" => "123-abc"},
+        {"name" => "Birthday List", "src" => "http://todoable.teachable.tech/api/lists/456-def", "id" => "456-def"}
+      ]
+    end
 
     it "queries all lists and turns them into List objects" do
       expect(mock_client).to receive(:lists).and_return(lists_attributes)
