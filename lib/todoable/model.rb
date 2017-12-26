@@ -21,7 +21,7 @@ module Todoable
     end
 
     def delete!
-      self.class.delete(self)
+      self.class.delete(id: id)
     end
 
     def delete

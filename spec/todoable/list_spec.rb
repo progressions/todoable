@@ -1,4 +1,5 @@
 require "spec_helper"
+require "todoable/list"
 
 RSpec.describe Todoable::List do
   let(:list_attributes) { {"name" => "Christmas List", "src" => "http://todoable.teachable.tech/api/lists/123-abc", "id" => "123-abc"} }
@@ -133,26 +134,26 @@ RSpec.describe Todoable::List do
 
   describe "#delete" do
     it "deletes the List" do
-      expect(mock_client).to receive(:delete_list).with(list).and_return("")
+      expect(mock_client).to receive(:delete_list).with(id: '123-abc').and_return("")
       expect(list.delete).to be_truthy
     end
 
     it "returns false on failure" do
       expect(mock_client).to receive(:delete_list)
-        .with(list).and_raise(Todoable::NotFound)
+        .with(id: '123-abc').and_raise(Todoable::NotFound)
       expect(list.delete).to be_falsey
     end
   end
 
   describe "#delete!" do
     it "deletes the List" do
-      expect(mock_client).to receive(:delete_list).with(list).and_return("")
+      expect(mock_client).to receive(:delete_list).with(id: '123-abc').and_return("")
       expect(list.delete!).to be_truthy
     end
 
     it "raises exception on failure" do
       expect(mock_client).to receive(:delete_list)
-        .with(list).and_raise(Todoable::NotFound)
+        .with(id: '123-abc').and_raise(Todoable::NotFound)
       expect { list.delete! }.to raise_exception(Todoable::NotFound)
     end
   end
