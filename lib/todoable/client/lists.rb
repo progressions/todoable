@@ -29,9 +29,7 @@ module Todoable
       #   Todoable::Client.create(name: "Birthday List") #=>
       #     {"name"=>"Birthday List", "src"=>"...", "id"=>"..."}
       #
-      def create_list(args = {})
-        name = args[:name] || args["name"]
-
+      def create_list(name:)
         params = {
           "list" => {
             "name" => name
@@ -58,9 +56,7 @@ module Todoable
       #   Todoable::Client.get_list(id: "41cf70a2-...") #=>
       #     {"name"=>"Birthday List", "src"=>"...", "id"=>"..."}
       #
-      def get_list(args = {})
-        id = args["id"] || args[:id]
-
+      def get_list(id:)
         list = get(path: "lists/#{id}")
         list["id"] ||= id
 
@@ -86,10 +82,7 @@ module Todoable
       #   Todoable::Client.update_list(id: "123-abc", name: "Birthday List") #=>
       #     {"name"=>"Birthday List", "src"=>"...", "id"=>"123-abc"}
       #
-      def update_list(args = {})
-        id = args["id"] || args[:id]
-        name = args["name"] || args[:name]
-
+      def update_list(id:, name:)
         path = "lists/#{id}"
         params = {
           "list" => {
@@ -111,9 +104,7 @@ module Todoable
       #   Todoable::Client.get_list(id: "41cf70a2-...") #=>
       #     Todoable::NotFound
       #
-      def delete_list(args = {})
-        id = args["id"]
-
+      def delete_list(id:)
         path = "lists/#{id}"
         request(method: :delete, path: path)
       end
