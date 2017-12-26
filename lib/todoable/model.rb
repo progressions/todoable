@@ -16,13 +16,6 @@ module Todoable
       set_attributes(attributes)
     end
 
-    def set_attributes(attributes={})
-      @attributes = HashWithIndifferentAccess.new(attributes)
-      attributes.each do |key, value|
-        instance_variable_set("@#{key}", value)
-      end
-    end
-
     def [](key)
       attributes[key.to_sym]
     end
@@ -41,6 +34,15 @@ module Todoable
       save!
     rescue StandardError => e
       false
+    end
+
+    private
+
+    def set_attributes(attributes={})
+      @attributes = HashWithIndifferentAccess.new(attributes)
+      attributes.each do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
     end
   end
 end

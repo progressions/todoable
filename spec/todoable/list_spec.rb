@@ -14,13 +14,13 @@ RSpec.describe Todoable::List do
     Todoable::List.instance_variable_set("@client", nil)
   end
 
-  context '.new' do
+  describe '.new' do
     it 'creates a List' do
       expect(list.name).to eq("Christmas List")
     end
   end
 
-  context '.all' do
+  describe '.all' do
     let(:lists_attributes) { [
       {'name'=>'Christmas List', 'src'=>'http://todoable.teachable.tech/api/lists/123-abc', 'id'=>'123-abc'},
       {'name'=>'Birthday List', 'src'=>'http://todoable.teachable.tech/api/lists/456-def', 'id'=>'456-def'}
@@ -35,13 +35,13 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '.create' do
+  describe '.create' do
     it 'creates a List object from a Hash' do
       expect(list.name).to eq("Christmas List")
     end
   end
 
-  context '.get' do
+  describe '.get' do
     it 'fetches a List from the server and converts it to a List object' do
       expect(mock_client).to receive(:get_list).with(id: '123-abc').and_return(list_attributes)
       list = Todoable::List.get(id: '123-abc')
@@ -49,7 +49,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '.update' do
+  describe '.update' do
     it 'updates a List on the Todoable server' do
       expect(mock_client).to receive(:update_list).with(id: "123-abc", name: "Birthday List").and_return(list_attributes.merge(name: "Birthday List"))
       list = Todoable::List.update(id: '123-abc', name: 'Birthday List')
@@ -57,14 +57,14 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '.delete' do
+  describe '.delete' do
     it 'deletes the List from the Todoable server' do
       expect(mock_client).to receive(:delete_list).with(id: '123-abc').and_return("")
       Todoable::List.delete(id: '123-abc')
     end
   end
 
-  context '#items' do
+  describe '#items' do
     let(:list_attributes) {
       {"name"=>"Grocs", "items"=>[{"name"=>"this be an item", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/41c87aee-c56f-4890-9c88-a6c34201ae7e/items/e6927127-b60c-44d4-b7d5-3510ca0b6f80", "id"=>"e6927127-b60c-44d4-b7d5-3510ca0b6f80"}, {"name"=>"QA7a382fa0-5670-404e-8ac8-24439bc96bd7", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/41f12914-b47a-4abe-9b48-606a6b76c959/items/b82ebd34-6be9-4838-b08a-c22a756509db", "id"=>"b82ebd34-6be9-4838-b08a-c22a756509db"}, {"name"=>"Bootsy", "finished_at"=>"2017-12-24T17:54:43.760Z", "src"=>"http://todoable.teachable.tech/api/lists/41cf70a2-9251-42f7-b8d1-c0a47ec58629/items/b61c612a-a4f8-4a4c-b2cc-7e0c72148679", "id"=>"b61c612a-a4f8-4a4c-b2cc-7e0c72148679"}], "id"=>"41cf70a2-9251-42f7-b8d1-c0a47ec58629"}
     }
@@ -76,7 +76,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#reload' do
+  describe '#reload' do
     it 'reloads an existing List from the server' do
       list.name = "Birthday List"
       expect(mock_client).to receive(:get_list).and_return(list_attributes)
@@ -89,7 +89,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#save' do
+  describe '#save' do
     it 'saves the List' do
       expect(mock_client).to receive(:update_list).and_return(list_attributes)
       list.name = 'Birthday List'
@@ -102,7 +102,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#save!' do
+  describe '#save!' do
     it 'saves the List' do
       expect(mock_client).to receive(:update_list).and_return(list_attributes)
       list.name = 'Birthday List'
@@ -115,7 +115,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#delete' do
+  describe '#delete' do
     it 'deletes the List' do
       expect(mock_client).to receive(:delete_list).with(list).and_return("")
       expect(list.delete).to be_truthy
@@ -127,7 +127,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#delete!' do
+  describe '#delete!' do
     it 'deletes the List' do
       expect(mock_client).to receive(:delete_list).with(list).and_return("")
       expect(list.delete!).to be_truthy
@@ -139,7 +139,7 @@ RSpec.describe Todoable::List do
     end
   end
 
-  context '#name=' do
+  describe '#name=' do
     it 'updates the name of the List' do
       list = Todoable::List.new(name: "Birthday")
       list.name = "Christmas"
