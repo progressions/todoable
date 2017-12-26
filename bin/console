@@ -15,8 +15,5 @@ Todoable.configure do |c|
   c.password = ENV["TODOABLE_PASSWORD"]
 end
 
-require 'todoable/list'
-require 'todoable/item'
-
 require "irb"
 IRB.start(__FILE__)
