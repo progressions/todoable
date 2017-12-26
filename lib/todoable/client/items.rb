@@ -26,7 +26,7 @@ module Todoable
           }
         }
         attributes = post(path: path, params: params)
-        attributes.merge("list_id", list_id)
+        attributes.merge({"list_id" => list_id })
       end
 
       # Marks an Item as finished on the Todoable server.

@@ -42,7 +42,7 @@ module Todoable
       # Takes either an arguments Hash, including the id of the List,
       # or a List object itself.
       #
-      # By default this API does not include the List"s id in the
+      # By default this API does not include the List's id in the
       # Hash. We add it here for consistency.
       #
       # @param [Symbol] id the id of the List

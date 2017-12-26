@@ -50,10 +50,36 @@ Todoable.configuration do |c|
   c.password = "password"
 end
 
-# Fetch all lists from the server.
-Todoable::List.all
+# Fetch all lists from the server. Uses the configured username and password
+# unless you supply overrides.
 
-#=> [#<Todoable::List:0x007f875ce78390 @attributes={"name"=>"Grocs", "src"=>"http://todoable.teachable.tech/api/lists/41cf70a2-9251-42f7-b8d1-c0a47ec58629", "id"=>"41cf70a2-9251-42f7-b8d1-c0a47ec58629"}, @name="Grocs", @src="http://todoable.teachable.tech/api/lists/41cf70a2-9251-42f7-b8d1-c0a47ec58629", @id="41cf70a2-9251-42f7-b8d1-c0a47ec58629">, #<Todoable::List:0x007f875ce788b8 @attributes={"name"=>"Death List", "src"=>"http://todoable.teachable.tech/api/lists/70679c05-65c6-4023-9841-d72fe804a0e2", "id"=>"70679c05-65c6-4023-9841-d72fe804a0e2"}, @name="Death List", @src="http://todoable.teachable.tech/api/lists/70679c05-65c6-4023-9841-d72fe804a0e2", @id="70679c05-65c6-4023-9841-d72fe804a0e2">
+client = Todoable::Client.new
+
+client.create_list(name: "Groceries")
+
+#=> {"name"=>"Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}
+
+lists = client.lists
+
+#=> [{"name"=>"Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Death List", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Shopping", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Birthday List", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}]
+
+client.update_list(id: list["id"], name: "Buy Groceries")
+
+item = client.create_item
+
+#=> {"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/98b2510c-0eb7-4316-bfef-d38c762b1ffb/items/bcf6443f-7231-4064-a607-667369792a77", "id"=>"bcf6443f-7231-4064-a607-667369792a77", "list_id"=>"98b2510c-0eb7-4316-bfef-d38c762b1ffb"}
+
+# When you fetch a List with `get_list`, it includes the List's associated Items.
+
+client.get_list(id: list["id"])
+
+#=> {"name"=>"Groceries", "items"=>[{"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/.../items/...", "id"=>"..."}], "id"=>"..."}
+
+client.finish_item(list_id: list["id"], id: item["id"])
+
+client.delete_item(list_id: list["id"], id: item["id"])
+
+client.delete_list(id: list["id"])
 
 ```
 
