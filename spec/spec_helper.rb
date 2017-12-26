@@ -11,9 +11,4 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
-
-  Todoable.configuration do |c|
-    c.username = "username"
-    c.password = "password"
-  end
 end

@@ -9,9 +9,13 @@ RSpec.describe Todoable::Client do
   let(:authentication) { { "token": "abcdef", "expires_at": expires_at.to_s } }
   let(:now) { Time.local(2017, 12, 25, 12, 0, 0) }
   let(:expires_at) { Time.local(2017, 12, 25, 12, 20, 0) }
-  let(:auth_request) { {:method=>:post, :url=>"http://todoable.teachable.tech/api/authenticate", :user=>"progressions@gmail.com", :password=>"todoable", :headers=>{:content_type=>:json, :accept=>:json}} }
+  let(:auth_request) { {:method=>:post, :url=>"http://todoable.teachable.tech/api/authenticate", :user=>"username", :password=>"password", :headers=>{:content_type=>:json, :accept=>:json}} }
 
   before(:each) do
+    Todoable.configure do |c|
+      c.username = "username"
+      c.password = "password"
+    end
     Timecop.freeze(now)
     allow(RestClient::Request).to receive(:execute).with(auth_request).and_yield(auth_response)
   end
