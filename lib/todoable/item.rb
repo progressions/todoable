@@ -1,6 +1,6 @@
-module Todoable
-  autoload :Model, "todoable/model"
+require "todoable/model"
 
+module Todoable
   # Class to represent a Todoable Item object, and to encapsulate
   # querying and updating Item objects.
   #

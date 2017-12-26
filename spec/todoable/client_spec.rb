@@ -33,17 +33,122 @@ RSpec.describe Todoable::Client do
   end
 
   describe "list methods" do
-    describe "#lists"
-    describe "#create_list"
-    describe "#get_list"
-    describe "#update_list"
-    describe "#delete_list"
+    let(:lists_attributes) do
+      [
+        {"name" => "Christmas List", "src" => "http://todoable.teachable.tech/api/lists/123-abc", "id" => "123-abc"},
+        {"name" => "Birthday List", "src" => "http://todoable.teachable.tech/api/lists/456-def", "id" => "456-def"}
+      ]
+    end
+    let(:list_attributes) do
+      {
+        "name" => "Christmas List",
+        "src" => "http://todoable.teachable.tech/api/lists/123-abc",
+        "id" => "123-abc"
+      }
+    end
+
+    describe "#lists" do
+      let(:response) { double("response", code: 200, body: { "lists" => lists_attributes }.to_json) }
+
+      it "fetches lists from the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:get, :url=>"http://todoable.teachable.tech/api/lists", :payload=>"{}", :headers=>anything).and_yield(response)
+
+        expect(client.lists).to eq(lists_attributes)
+      end
+    end
+
+    describe "#create_list" do
+      let(:response) { double("response", code: 200, body: list_attributes.to_json) }
+
+      it "creates a List" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:post, :url=>"http://todoable.teachable.tech/api/lists", :payload=>"{\"list\":{\"name\":\"Christmas List\"}}", :headers=>anything).and_yield(response)
+
+        list = client.create_list(name: "Christmas List")
+        expect(list).to eq(list_attributes)
+      end
+    end
+
+    describe "#get_list" do
+      let(:list_attributes) do
+        {
+          "name" => "Groceries",
+          "items" => [
+            { "name" => "get dog food",
+              "finished_at" => nil,
+              "src" => "http://todoable.teachable.tech/api/lists/123-abc/items/987-zyx",
+              "id" => "987-zyx" },
+            { "name" => "dish soap",
+              "finished_at" => nil,
+              "src" => "http://todoable.teachable.tech/api/lists/123-abc/items/654-wvu",
+              "id" => "654-wvu" }
+          ], "id" => "123-abc"
+        }
+      end
+      let(:response) { double("response", code: 200, body: list_attributes.to_json) }
+
+      it "fetches a List from the server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:get, :url=>"http://todoable.teachable.tech/api/lists/123-abc", :payload=>"{}", :headers=>anything).and_yield(response)
+        client.get_list(id: "123-abc")
+      end
+
+    end
+
+    describe "#update_list" do
+      let(:response) { double("response", code: 200, body: list_attributes.to_json) }
+
+      it "updates the name of the List on the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:patch, :url=>"http://todoable.teachable.tech/api/lists/123-abc", :payload=>"{\"list\":{\"name\":\"Grocery List\"}}", :headers=>anything).and_yield(response)
+        client.update_list(id: "123-abc", name: "Grocery List")
+      end
+    end
+
+    describe "#delete_list" do
+      let(:response) { double("response", code: 200, body: "") }
+
+      it "deletes the List from the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:delete, :url=>"http://todoable.teachable.tech/api/lists/123-abc", :payload=>"{}", :headers=>anything).and_yield(response)
+        client.delete_list(id: "123-abc")
+      end
+    end
   end
 
   describe "item methods" do
-    describe "#create_item"
-    describe "#finish_item"
-    describe "#delete_item"
+    let(:item_attributes) do
+      {
+        "name" => "get dog food",
+        "finished_at" => nil,
+        "src" => "http://todoable.teachable.tech/api/lists/123-abc/items/987-zyx",
+        "list_id" => "123-abc",
+        "id" => "987-zyx",
+      }
+    end
+
+    describe "#create_item" do
+      let(:response) { double("response", code: 200, body: item_attributes.to_json) }
+
+      it "creates an Item on the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:post, :url=>"http://todoable.teachable.tech/api/lists/123-abc/items", :payload=>"{\"item\":{\"name\":\"get dog food\"}}", :headers=>anything).and_yield(response)
+        client.create_item(list_id: "123-abc", name: "get dog food")
+      end
+    end
+
+    describe "#finish_item" do
+      let(:response) { double("response", code: 200, body: "get dog food finished") }
+
+      it "finishes an Item on the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:put, :url=>"http://todoable.teachable.tech/api/lists/123-abc/items/987-zyx/finish", :payload=>"{}", :headers=>anything).and_yield(response)
+        client.finish_item(list_id: "123-abc", id: "987-zyx")
+      end
+    end
+
+    describe "#delete_item" do
+      let(:response) { double("response", code: 200, body: "") }
+
+      it "deletes an Item from the Todoable server" do
+        expect(RestClient::Request).to receive(:execute).with(:method=>:delete, :url=>"http://todoable.teachable.tech/api/lists/123-abc/items/987-zyx", :payload=>"{}", :headers=>anything).and_yield(response)
+        client.delete_item(list_id: "123-abc", id: "987-zyx")
+      end
+    end
   end
 
   describe "request" do

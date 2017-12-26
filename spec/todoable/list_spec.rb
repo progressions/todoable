@@ -77,7 +77,7 @@ RSpec.describe Todoable::List do
   describe "#items" do
     let(:list_attributes) do
       {
-        "name" => "Groceriess",
+        "name" => "Groceries",
         "items" => [
           { "name" => "get dog food",
             "finished_at" => nil,
