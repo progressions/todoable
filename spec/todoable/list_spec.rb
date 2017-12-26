@@ -67,10 +67,10 @@ RSpec.describe Todoable::List do
     end
   end
 
-  describe ".delete" do
+  describe ".delete!" do
     it "deletes the List from the Todoable server" do
       expect(mock_client).to receive(:delete_list).with(id: "123-abc").and_return("")
-      Todoable::List.delete(id: "123-abc")
+      Todoable::List.delete!(id: "123-abc")
     end
   end
 

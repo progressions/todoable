@@ -8,9 +8,8 @@ module Todoable
       # Creates a new Item with the given list_id and name on the Todoable
       # server.
       #
-      # @param [Hash] args the attributes to create the Item
-      # @option args [Symbol] :list_id the id of a List
-      # @option args [Symbol] :name the name of the new Item
+      # @param [Symbol] list_id the id of a List
+      # @param [Symbol] name the name of the new Item
       #
       # @return [Hash] an Item resource in Hash form
       #
@@ -32,9 +31,8 @@ module Todoable
 
       # Marks an Item as finished on the Todoable server.
       #
-      # @param [Hash] args the attributes to identify the Item
-      # @option args [Symbol] :list_id the id of a List
-      # @option args [Symbol] :id the id of a Item
+      # @param [Symbol] list_id the id of a List
+      # @param [Symbol] id the id of a Item
       #
       # @return [Boolean] returns `true` if request was successful
       #
@@ -52,9 +50,8 @@ module Todoable
       # The Todoable server raises a NotFound exception if the
       # Item is already finished.
       #
-      # @param [Hash] args the attributes to identify the Item
-      # @option args [Symbol] :list_id the id of a List
-      # @option args [Symbol] :id the id of a Item
+      # @param [Symbol] list_id the id of a List
+      # @param [Symbol] id the id of a Item
       #
       # @return [Boolean] returns `true` if request was successful
       #

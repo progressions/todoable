@@ -80,10 +80,9 @@ module Todoable
       # Creates a new Item associated with a given List, and instantiates a
       # new Item object based on it.
       #
-      # @param [Hash] args the attributes to create the Item
-      # @option args [Symbol] :list_id the id of the List to associate this
+      # @param [Symbol] list_id the id of the List to associate this
       # Item with
-      # @option args [Symbol] :name the name of the new Item
+      # @param [Symbol] name the name of the new Item
       #
       # @return [Item] a Todoable::List object
       #
@@ -102,9 +101,8 @@ module Todoable
       # The Todoable server raises a NotFound exception if the
       # Item is already finished.
       #
-      # @param [Hash] args the attributes to identify the Item
-      # @option args [Symbol] :list_id the id of a List
-      # @option args [Symbol] :id the id of a Item
+      # @param [Symbol] list_id the id of a List
+      # @param [Symbol] id the id of a Item
       #
       # @return [Boolean] returns `true` if request was successful
       #
@@ -118,9 +116,8 @@ module Todoable
 
       # Deletes an Item from the Todoable server.
       #
-      # @param [Hash] args the attributes to identify the Item
-      # @option args [Symbol] :list_id the id of a List
-      # @option args [Symbol] :id the id of a Item
+      # @param [Symbol] list_id the id of a List
+      # @param [Symbol] id the id of a Item
       #
       # @return [Boolean] returns `true` if request was successful
       #

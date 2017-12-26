@@ -9,25 +9,37 @@ module Todoable
   class Client
     attr_accessor :expires_at
 
-    # URI of the Todoable API server.
-    BASE_URI = "http://todoable.teachable.tech/api".freeze
-
     autoload :Lists, "todoable/client/lists"
     autoload :Items, "todoable/client/items"
 
     include Lists
     include Items
 
+    # Instantiate a new client, passing optional username and password, or
+    # using the configured defaults.
+    #
+    # @param [String] username username on the Todoable server
+    # @param [String] password password for the Todoable server
+    # @param [String] base_uri URI of the Todoable API server
+    #
     def initialize(username: nil, password: nil, base_uri: nil)
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
-
-      # FIXME: This is really ugly.
-      @base_uri = base_uri || Todoable.configuration.base_uri || BASE_URI
+      @base_uri = base_uri || Todoable.configuration.base_uri
 
       authenticate
     end
 
+    # Make a request against the Todoable API sever.
+    #
+    # @param [String] method the method to make the request wth
+    # @param [String] path the path of the request, will be appended
+    # to the base URI
+    # @param [String] params optional parameters to send
+    #
+    # @return [String|Boolean] the JSON-decoded body of a successful request,
+    # or +true+ if the request had no body
+    #
     def request(method: :get, path:, params: {})
       authenticate
 
@@ -43,10 +55,28 @@ module Todoable
       ) { |response| handle_response(response) }
     end
 
+    # Make a GET request against the Todoable API sever.
+    #
+    # @param [String] path the path of the request, will be appended
+    # to the base URI
+    # @param [String] params optional parameters to send
+    #
+    # @return [String|Boolean] the JSON-decoded body of a successful request,
+    # or +true+ if the request had no body
+    #
     def get(path:, params: {})
       request(method: :get, path: path, params: params)
     end
 
+    # Make a POST request against the Todoable API sever.
+    #
+    # @param [String] path the path of the request, will be appended
+    # to the base URI
+    # @param [String] params optional parameters to send
+    #
+    # @return [String|Boolean] the JSON-decoded body of a successful request,
+    # or +true+ if the request had no body
+    #
     def post(path:, params: {})
       request(method: :post, path: path, params: params)
     end

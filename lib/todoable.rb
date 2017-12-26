@@ -15,10 +15,26 @@ module Todoable
   autoload :Item, "todoable/item"
 
   class << self
+    # Returns a +Configuration+ object which can be used to save
+    # +username+ and +password+ for the Todoable client.
+    #
+    # @example
+    #   Todoable.configuration.username = "my_username"
+    #   Todoable.configuration.password = "password"
+    #
     def configuration
       @configuration ||= Configuration.new
     end
 
+    # Yields a configuration object which can be used in block
+    # format to configure the Todoable client.
+    #
+    # @example
+    #   Todoable.configure do |c|
+    #     c.username = "my_username"
+    #     c.password = "password"
+    #   end
+    #
     def configure
       yield(configuration)
     end

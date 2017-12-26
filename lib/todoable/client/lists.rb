@@ -20,8 +20,7 @@ module Todoable
 
       # Creates a new List object with the given name.
       #
-      # @param [Hash] args the attributes to create the List
-      # @option args [Symbol] :name the name of the new List
+      # @param [Symbol] name the name of the new List
       #
       # @return [Hash] a List resource in Hash form
       #
@@ -46,9 +45,7 @@ module Todoable
       # By default this API does not include the List"s id in the
       # Hash. We add it here for consistency.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
+      # @param [Symbol] id the id of the List
       #
       # @return [Hash] a List resource in Hash form
       #
@@ -71,10 +68,8 @@ module Todoable
       # If a List object is passed, the name will be updated to the current name
       # of the List object.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
-      # @option args [Symbol] :name the new name of the List
+      # @param [Symbol] id the id of the List
+      # @param [Symbol] name the new name of the List
       #
       # @return [Hash] a List resource in Hash form
       #
@@ -94,9 +89,7 @@ module Todoable
 
       # Deletes a List from the Todoable server.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
+      # @param [Symbol] id the id of the List
       #
       # @example
       #   Todoable::Client.delete_list(id: "41cf70a2-...") #=>

@@ -56,7 +56,27 @@ module Todoable
       self
     end
 
-    # Saves changes to this List to the Todoable server.
+    # Saves changes to this List to the Todoable server, returning
+    # +false+ on error.
+    #
+    # @return [Boolean] `true` if List saved successfully
+    #
+    # @example
+    #   list #=>
+    #     #<Todoable::List @name="Shopping", @src="...", @id="...">
+    #   list.name = "Grocery Shopping" # Don"t save this change
+    #   list.save
+    #   list.reload #=>
+    #     #<Todoable::List @name="Grocery Shopping", @src="...", @id="...">
+    #
+    def save
+      save!
+    rescue StandardError
+      false
+    end
+
+    # Saves changes to this List to the Todoable server, raising
+    # exceptions on error.
     #
     # @return [Boolean] `true` if List saved successfully
     #
@@ -107,8 +127,7 @@ module Todoable
 
       # Creates a new List object with the given name.
       #
-      # @param [Hash] args the attributes to create the List
-      # @option args [Symbol] :name the name of the new List
+      # @param [Symbol] name the name of the new List
       #
       # @return [List] a Todoable::List object
       #
@@ -124,9 +143,7 @@ module Todoable
 
       # Fetches a List from the Todoable server.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
+      # @param [Symbol] id the id of the List
       #
       # @return [List] a Todoable::List object
       #
@@ -148,10 +165,8 @@ module Todoable
       # If a List object is passed, the name will be updated to the current name
       # of the List object.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
-      # @option args [Symbol] :name the new name of the List
+      # @param [Symbol] id the id of the List
+      # @param [Symbol] name the new name of the List
       #
       # @return [List] a Todoable::List object
       #
@@ -174,9 +189,7 @@ module Todoable
 
       # Deletes a List from the Todoable server.
       #
-      # @param [Hash|List] args arguments to identify the List;
-      # optionally, a List object can be passed
-      # @option args [Symbol] :id the id of the List
+      # @param [Symbol] id the id of the List
       #
       # @example
       #   Todoable::List.delete(id: "41cf70a2-...") #=>
@@ -184,7 +197,7 @@ module Todoable
       #   Todoable::List.get(id: "41cf70a2-...") #=>
       #     Todoable::NotFound
       #
-      def delete(id:)
+      def delete!(id:)
         client.delete_list(id: id)
       end
     end
