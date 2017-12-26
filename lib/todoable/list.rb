@@ -82,7 +82,7 @@ module Todoable
     #
     # @return [String] new name
     #
-    # @param [string] value the new name for this List object
+    # @param [String] value the new name for this List object
     #
     def name=(value)
       @name = attributes[:name] = value
@@ -110,7 +110,6 @@ module Todoable
       #
       # @param [Hash] args the attributes to create the List
       # @option args [Symbol] :name the name of the new List
-      # @option args [String] :name the name of the new List
       #
       # @return [List] a Todoable::List object
       #
@@ -128,7 +127,6 @@ module Todoable
       #
       # @param [Hash|List] args arguments to identify the List; optionally, a List object can be passed
       # @option args [Symbol] :id the id of the List
-      # @option args [String] :id the id of the List
       #
       # @return [List] a Todoable::List object
       #
@@ -153,9 +151,7 @@ module Todoable
       # @param [Hash|List] args arguments to identify the List; optionally, a List object
       # can be passed
       # @option args [Symbol] :id the id of the List
-      # @option args [String] :id the id of the List
       # @option args [Symbol] :name the new name of the List
-      # @option args [String] :name the new name of the List
       #
       # @return [List] a Todoable::List object
       #
@@ -181,7 +177,6 @@ module Todoable
       # @param [Hash|List] args arguments to identify the List; optionally, a List object
       # can be passed
       # @option args [Symbol] :id the id of the List
-      # @option args [String] :id the id of the List
       #
       # @example
       #   Todoable::List.delete(id: "41cf70a2-...") #=>

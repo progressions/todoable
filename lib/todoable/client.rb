@@ -14,6 +14,7 @@ module Todoable
     autoload :Items, 'todoable/client/items'
 
     include Lists
+    include Items
 
     def initialize(username: nil, password: nil, base_uri: nil)
       username = "progressions@gmail.com"
