@@ -1,11 +1,11 @@
-require 'spec_helper'
-require 'timecop'
+require "spec_helper"
+require "timecop"
 
 RSpec.describe Todoable::Client do
   let(:client) { Todoable::Client.new }
   let(:rest_client) { double("rest_client request") }
   let(:response) { double("response", code: 200) }
-  let(:auth_response) { double('auth response', code: 200, body: authentication.to_json) }
+  let(:auth_response) { double("auth response", code: 200, body: authentication.to_json) }
   let(:authentication) { { "token": "abcdef", "expires_at": expires_at.to_s } }
   let(:now) { Time.local(2017, 12, 25, 12, 0, 0) }
   let(:expires_at) { Time.local(2017, 12, 25, 12, 20, 0) }
@@ -35,12 +35,12 @@ RSpec.describe Todoable::Client do
     it "checks authentication before making request" do
       client
 
-      # token has expired, we'll need to fetch a new one
+      # token has expired, we"ll need to fetch a new one
       Timecop.freeze(Time.local(2018, 12, 25, 12, 40, 0))
 
       expect(client).to receive(:request_token).and_return({"token" => "ghijkl", "expires_at" => "2017-12-25 12:50:00 -0600"})
       expect(RestClient::Request).to receive(:execute).with({:method=>:get, :url=>"http://todoable.teachable.tech/api/lists", :payload=>"{}", :headers=>anything}).and_yield(response)
-      result = client.request(path: 'lists')
+      result = client.request(path: "lists")
 
       expect(result).to eq(lists)
     end
@@ -52,7 +52,7 @@ RSpec.describe Todoable::Client do
 
     it "makes request with method GET" do
       expect(RestClient::Request).to receive(:execute).with({:method=>:get, :url=>"http://todoable.teachable.tech/api/list", :payload=>"{\"list_id\":\"123-abc\"}", :headers=>anything}).and_yield(response)
-      result = client.get(path: "list", params: {list_id: '123-abc'})
+      result = client.get(path: "list", params: {list_id: "123-abc"})
 
       expect(result).to eq(list)
     end
@@ -64,7 +64,7 @@ RSpec.describe Todoable::Client do
 
     it "makes request with method POST" do
       expect(RestClient::Request).to receive(:execute).with({:method=>:post, :url=>"http://todoable.teachable.tech/api/lists", :payload=>"{\"name\":\"Shopping\"}", :headers=>anything}).and_yield(response)
-      result = client.post(path: "lists", params: {name: 'Shopping'})
+      result = client.post(path: "lists", params: {name: "Shopping"})
 
       expect(result).to eq(list)
     end

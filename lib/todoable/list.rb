@@ -1,5 +1,5 @@
 module Todoable
-  autoload :Model, 'todoable/model'
+  autoload :Model, "todoable/model"
 
   # Class to represent a Todoable List object, and to encapsulate
   # querying and updating List objects.
@@ -44,7 +44,7 @@ module Todoable
     # @example
     #   list #=>
     #     #<Todoable::List @name="Shopping", @src="...", @id="...">
-    #   list.name = "Grocery Shopping" # Don't save this change
+    #   list.name = "Grocery Shopping" # Don"t save this change
     #   list.reload #=>
     #     #<Todoable::List @name="Shopping", @src="...", @id="...">
     #
@@ -64,7 +64,7 @@ module Todoable
     # @example
     #   list #=>
     #     #<Todoable::List @name="Shopping", @src="...", @id="...">
-    #   list.name = "Grocery Shopping" # Don't save this change
+    #   list.name = "Grocery Shopping" # Don"t save this change
     #   list.save
     #   list.reload #=>
     #     #<Todoable::List @name="Grocery Shopping", @src="...", @id="...">
@@ -72,7 +72,7 @@ module Todoable
     def save!
       self.class.update(id: id, name: name)
 
-      self.reload
+      reload
     end
 
     # Changes the name of the in-memory List object.
@@ -117,7 +117,7 @@ module Todoable
       #   Todoable::List.create(name: "Birthday List") #=>
       #     #<Todoable::List @name="Birthday List", @src="...", @id="...">
       #
-      def create(args={})
+      def create(args = {})
         attributes = client.create_list(args)
 
         Todoable::List.new(attributes)
@@ -125,7 +125,8 @@ module Todoable
 
       # Fetches a List from the Todoable server.
       #
-      # @param [Hash|List] args arguments to identify the List; optionally, a List object can be passed
+      # @param [Hash|List] args arguments to identify the List;
+      # optionally, a List object can be passed
       # @option args [Symbol] :id the id of the List
       #
       # @return [List] a Todoable::List object
@@ -134,7 +135,7 @@ module Todoable
       #   Todoable::List.get(id: "41cf70a2-...") #=>
       #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
       #
-      def get(args={})
+      def get(args = {})
         list = client.get_list(args)
 
         Todoable::List.new(list)
@@ -148,25 +149,25 @@ module Todoable
       # If a List object is passed, the name will be updated to the current name
       # of the List object.
       #
-      # @param [Hash|List] args arguments to identify the List; optionally, a List object
-      # can be passed
+      # @param [Hash|List] args arguments to identify the List;
+      # optionally, a List object can be passed
       # @option args [Symbol] :id the id of the List
       # @option args [Symbol] :name the new name of the List
       #
       # @return [List] a Todoable::List object
       #
       # @example
-      #   Todoable::List.update(id: "41cf70a2-...", name: "Jenny's Birthday List") #=>
-      #     #<Todoable::List @name="Jenny's Birthday List", @src="...", @id="41cf70a2-...">
+      #   Todoable::List.update(id: "41cf70a2-...", name: "Jenny"s Birthday List") #=>
+      #     #<Todoable::List @name="Jenny"s Birthday List", @src="...", @id="41cf70a2-...">
       #
       # @example
       #   list = Todoable::List.get(id: "41cf70a2-...") #=>
       #     #<Todoable::List @name="Birthday List", @src="...", @id="41cf70a2-...">
-      #   list.name = "Jenny's Birthday List"
+      #   list.name = "Jenny"s Birthday List"
       #   Todoable::List.update(list) #=>
-      #     #<Todoable::List @name="Jenny's Birthday List", @src="...", @id="41cf70a2-...">
+      #     #<Todoable::List @name="Jenny"s Birthday List", @src="...", @id="41cf70a2-...">
       #
-      def update(args={})
+      def update(args = {})
         list = client.update_list(args)
 
         Todoable::List.new(list)
@@ -174,8 +175,8 @@ module Todoable
 
       # Deletes a List from the Todoable server.
       #
-      # @param [Hash|List] args arguments to identify the List; optionally, a List object
-      # can be passed
+      # @param [Hash|List] args arguments to identify the List;
+      # optionally, a List object can be passed
       # @option args [Symbol] :id the id of the List
       #
       # @example
@@ -184,7 +185,7 @@ module Todoable
       #   Todoable::List.get(id: "41cf70a2-...") #=>
       #     Todoable::NotFound
       #
-      def delete(args={})
+      def delete(args = {})
         client.delete_list(args)
       end
     end

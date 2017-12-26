@@ -10,22 +10,19 @@ module Todoable
     attr_accessor :expires_at
 
     # URI of the Todoable API server.
-    BASE_URI = 'http://todoable.teachable.tech/api'
+    BASE_URI = "http://todoable.teachable.tech/api".freeze
 
-    autoload :Lists, 'todoable/client/lists'
-    autoload :Items, 'todoable/client/items'
+    autoload :Lists, "todoable/client/lists"
+    autoload :Items, "todoable/client/items"
 
     include Lists
     include Items
 
     def initialize(username: nil, password: nil, base_uri: nil)
-      username = "progressions@gmail.com"
-      password = "todoable"
-
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
 
-      @base_uri ||= Todoable.configuration.base_uri || BASE_URI
+      @base_uri = base_uri || Todoable.configuration.base_uri || BASE_URI
 
       authenticate
     end
@@ -35,16 +32,14 @@ module Todoable
 
       uri = "#{@base_uri}/#{path}"
       headers = {
-        'Authorization' => "Token token=\"#{@token}\"",
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json'
+        "Authorization" => "Token token=\"#{@token}\"",
+        "Accept" => "application/json",
+        "Content-Type" => "application/json"
       }
 
       RestClient::Request.execute(
         method: method, url: uri, payload: params.to_json, headers: headers
-      ) do |response|
-        handle_response(response)
-      end
+      ) { |response| handle_response(response) }
     end
 
     def get(path:, params: {})
@@ -82,8 +77,8 @@ module Todoable
       if @expires_at.nil? || DateTime.now > @expires_at
         response = request_token
 
-        @token = response['token']
-        @expires_at = DateTime.parse(response['expires_at'])
+        @token = response["token"]
+        @expires_at = DateTime.parse(response["expires_at"])
       end
 
       [@token, @expires_at]
