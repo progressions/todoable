@@ -40,7 +40,7 @@ module Todoable
   #   client.delete_list(id: list["id"])
   #
   class Client
-    attr_accessor :expires_at
+    attr_reader :token, :expires_at
 
     autoload :Lists, "todoable/client/lists"
     autoload :Items, "todoable/client/items"
@@ -59,6 +59,8 @@ module Todoable
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
       @base_uri = base_uri || Todoable.configuration.base_uri
+
+      authenticate
     end
 
     # Make a request against the Todoable API sever.
@@ -112,6 +114,14 @@ module Todoable
       request(method: :post, path: path, params: params)
     end
 
+    # Indicate whether authentication is required.
+    #
+    # @return [Boolean] +true+ if the client needs to re-authenticate
+    #
+    def authenticated?
+      @expires_at && DateTime.now <= @expires_at
+    end
+
     private
 
     def handle_response(response)
@@ -136,7 +146,7 @@ module Todoable
     end
 
     def authenticate
-      if @expires_at.nil? || DateTime.now > @expires_at
+      if !authenticated?
         response = request_token
 
         @token = response["token"]
