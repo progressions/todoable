@@ -23,6 +23,8 @@ module Todoable
   #
   #   client.update_list(id: list["id"], name: "Buy Groceries")
   #
+  #   #=> {"name"=>"Buy Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}
+  #
   #   item = client.create_item
   #
   #   #=> {"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/98b2510c-0eb7-4316-bfef-d38c762b1ffb/items/bcf6443f-7231-4064-a607-667369792a77", "id"=>"bcf6443f-7231-4064-a607-667369792a77", "list_id"=>"98b2510c-0eb7-4316-bfef-d38c762b1ffb"}
