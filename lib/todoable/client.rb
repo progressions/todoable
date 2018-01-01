@@ -53,15 +53,41 @@ module Todoable
     # Instantiate a new client, passing optional username and password, or
     # using the configured defaults.
     #
+    # Instantiate the client one of two ways:
+    #
+    # - username/password
+    # - token/expires_at
+    #
     # @param [String] username username on the Todoable server
     # @param [String] password password for the Todoable server
     # @param [String] base_uri URI of the Todoable API server
+    # @param [String] token authentication token
+    # @param [String] expires_at expiration time of the authentication token
+    #
+    # @example
+    #
+    #   If you are authenticating for the first time, and/or if you intend
+    #   to keep the Client in memory, you can authenticate with your
+    #   username and password.
+    #
+    #   This will create a temporary token with an expiry date, but the client
+    #   will re-authenticate with the username and password you entered when
+    #   it expires.
+    #
+    #   Todoable::Client.new(username: "user", password: "pass")
+    #
+    # @example
+    #   If you have previously authenticated, but need to reinstantiate the
+    #   client, you can store the token and expires_at values and pass them
+    #   to the client upon instantiation.
+    #
+    #   Todoable::Client.new(token: "abcdef", expires_at: "2018-01-02T00:00:00+00:00"
     #
     def initialize(username: nil, password: nil, base_uri: nil,
                    token: nil, expires_at: nil)
 
       @token = token
-      @expires_at = expires_at
+      @expires_at = DateTime.parse(expires_at.to_s) if expires_at
 
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
