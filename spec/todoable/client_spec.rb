@@ -143,7 +143,7 @@ RSpec.describe Todoable::Client do
     end
   end
 
-  describe "request" do
+  describe "#request" do
     let(:response) { double("response: lists", code: 200, body: lists.to_json) }
     let(:lists) { [{"name"=>"Groceries", "src"=>"...", "id"=>"..."}, {"name"=>"Shopping", "src"=>"...", "id"=>"..."}] }
 
@@ -161,7 +161,7 @@ RSpec.describe Todoable::Client do
     end
   end
 
-  describe "get" do
+  describe "#get" do
     let(:response) { double("response: lists", code: 200, body: list.to_json) }
     let(:list) { {"name"=>"Groceries", "src"=>"...", "id"=>"..."} }
 
@@ -173,7 +173,7 @@ RSpec.describe Todoable::Client do
     end
   end
 
-  describe "post" do
+  describe "#post" do
     let(:response) { double("response: lists", code: 200, body: list.to_json) }
     let(:list) { {"name"=>"Shopping", "src"=>"...", "id"=>"..."} }
 
@@ -182,6 +182,51 @@ RSpec.describe Todoable::Client do
       result = client.post(path: "lists", params: {name: "Shopping"})
 
       expect(result).to eq(list)
+    end
+  end
+
+  describe "#authenticated?" do
+    it "returns true if authenticated" do
+      client.authenticate
+      expect(client.authenticated?).to be_truthy
+    end
+
+    it "returns falsey if not authenticated" do
+      expect(client.authenticated?).to be_falsey
+    end
+  end
+
+  describe "#authenticate!" do
+    let(:invalid_auth_request) { {:method=>:post, :url=>"http://todoable.teachable.tech/api/authenticate", :user=>"nobody", :password=>"nothing", :headers=>{:content_type=>:json, :accept=>:json}} }
+
+    it "returns token and expires_at" do
+      token, expires_at = client.authenticate!
+      expect(token).to eq("abcdef")
+      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-06:00")
+    end
+
+    it "raises exception if it cannot authenticate" do
+      allow(RestClient::Request).to receive(:execute).with(invalid_auth_request).and_raise(Todoable::Unauthorized)
+      client = Todoable::Client.new(username: "nobody", password: "nothing")
+      expect { client.authenticate! }.to raise_exception(Todoable::Unauthorized)
+    end
+  end
+
+  describe "#authenticate" do
+    let(:invalid_auth_request) { {:method=>:post, :url=>"http://todoable.teachable.tech/api/authenticate", :user=>"nobody", :password=>"nothing", :headers=>{:content_type=>:json, :accept=>:json}} }
+
+    it "returns token and expires_at" do
+      token, expires_at = client.authenticate
+      expect(token).to eq("abcdef")
+      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-06:00")
+    end
+
+    it "return nils if it cannot authenticate" do
+      allow(RestClient::Request).to receive(:execute).with(invalid_auth_request).and_raise(Todoable::Unauthorized)
+      client = Todoable::Client.new(username: "nobody", password: "nothing")
+      token, expires_at = client.authenticate
+      expect(token).to be_nil
+      expect(expires_at).to be_nil
     end
   end
 end

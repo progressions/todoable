@@ -92,8 +92,6 @@ module Todoable
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
       @base_uri = base_uri || Todoable.configuration.base_uri
-
-      authenticate
     end
 
     # Make a request against the Todoable API sever.
@@ -155,6 +153,34 @@ module Todoable
       @expires_at && DateTime.now <= @expires_at
     end
 
+    # Request a token and expiration date from the Todoable server.
+    #
+    # Raise Todoable::Unauthorized if credentials are not accepted.
+    #
+    # @return [String, String] [token, expires_at]
+    #
+    def authenticate!
+      if !authenticated?
+        response = request_token
+
+        @token = response["token"]
+        @expires_at = DateTime.parse(response["expires_at"])
+      end
+
+      [@token, @expires_at]
+    end
+
+    # Request a token and expiration date from the Todoable server.
+    #
+    # If credentials are not accepted, return nil values but do not
+    # raise exception.
+    #
+    def authenticate
+      authenticate!
+    rescue Todoable::Unauthorized
+      [nil, nil]
+    end
+
     private
 
     def handle_response(response)
@@ -176,17 +202,6 @@ module Todoable
 
         raise Todoable::UnprocessableEntity.new(errors)
       end
-    end
-
-    def authenticate
-      if !authenticated?
-        response = request_token
-
-        @token = response["token"]
-        @expires_at = DateTime.parse(response["expires_at"])
-      end
-
-      [@token, @expires_at]
     end
 
     def request_token
