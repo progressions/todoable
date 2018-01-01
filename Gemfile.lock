@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    todoable (0.2.0)
-      activesupport
-      rest-client
+    todoable (0.3.0)
+      activesupport (~> 5.1.4)
+      rest-client (~> 2.0.2)
 
 GEM
   remote: https://rubygems.org/

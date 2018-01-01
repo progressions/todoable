@@ -1,7 +1,7 @@
 module Todoable
-  class NotFound < StandardError; end
-  class Unauthorized < StandardError; end
-  class UnprocessableEntity < StandardError; end
+  NotFound = Class.new(StandardError)
+  Unauthorized = Class.new(StandardError)
+  UnprocessableEntity = Class.new(StandardError)
   class ItemAlreadyFinished < StandardError
     def initialize(item)
       super("Item: `#{item.name}` is already finished")
