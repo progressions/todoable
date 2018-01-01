@@ -57,7 +57,12 @@ module Todoable
     # @param [String] password password for the Todoable server
     # @param [String] base_uri URI of the Todoable API server
     #
-    def initialize(username: nil, password: nil, base_uri: nil)
+    def initialize(username: nil, password: nil, base_uri: nil,
+                   token: nil, expires_at: nil)
+
+      @token = token
+      @expires_at = expires_at
+
       @username = username || Todoable.configuration.username
       @password = password || Todoable.configuration.password
       @base_uri = base_uri || Todoable.configuration.base_uri
