@@ -163,6 +163,8 @@ module Todoable
       if !authenticated?
         response = request_token
 
+        # Maybe raise an exception if the request is a 500
+
         @token = response["token"]
         @expires_at = DateTime.parse(response["expires_at"])
       end
@@ -177,7 +179,7 @@ module Todoable
     #
     def authenticate
       authenticate!
-    rescue Todoable::Unauthorized
+    rescue StandardError
       [nil, nil]
     end
 
@@ -201,6 +203,8 @@ module Todoable
         errors = JSON.parse(response.body)
 
         raise Todoable::UnprocessableEntity.new(errors)
+      when 500
+        raise StandardError.new("Error 500")
       end
     end
 
