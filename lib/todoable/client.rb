@@ -2,6 +2,7 @@ module Todoable
   NotFound = Class.new(StandardError)
   Unauthorized = Class.new(StandardError)
   UnprocessableEntity = Class.new(StandardError)
+  InternalServerError = Class.new(StandardError)
   class ItemAlreadyFinished < StandardError
     def initialize(item)
       super("Item: `#{item.name}` is already finished")
@@ -163,8 +164,6 @@ module Todoable
       if !authenticated?
         response = request_token
 
-        # Maybe raise an exception if the request is a 500
-
         @token = response["token"]
         @expires_at = DateTime.parse(response["expires_at"])
       end
@@ -204,7 +203,7 @@ module Todoable
 
         raise Todoable::UnprocessableEntity.new(errors)
       when 500
-        raise StandardError.new("Error 500")
+        raise Todoable::InternalServerError.new
       end
     end
 
