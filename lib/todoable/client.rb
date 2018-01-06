@@ -2,6 +2,7 @@ module Todoable
   NotFound = Class.new(StandardError)
   Unauthorized = Class.new(StandardError)
   UnprocessableEntity = Class.new(StandardError)
+  InternalServerError = Class.new(StandardError)
   class ItemAlreadyFinished < StandardError
     def initialize(item)
       super("Item: `#{item.name}` is already finished")
@@ -177,7 +178,7 @@ module Todoable
     #
     def authenticate
       authenticate!
-    rescue Todoable::Unauthorized
+    rescue StandardError
       [nil, nil]
     end
 
@@ -201,6 +202,8 @@ module Todoable
         errors = JSON.parse(response.body)
 
         raise Todoable::UnprocessableEntity.new(errors)
+      when 500
+        raise Todoable::InternalServerError.new
       end
     end
 
