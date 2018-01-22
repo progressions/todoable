@@ -13,6 +13,8 @@ RSpec.describe Todoable::Client do
     let(:username) { "username" }
     let(:password) { "password" }
   else
+    puts("Running live tests against local API")
+
     let(:base_uri) { "http://localhost:4000/api" }
     let(:username) { "username" }
     let(:password) { "password" }
