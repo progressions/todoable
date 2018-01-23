@@ -36,6 +36,9 @@ RSpec.describe Todoable::Client do
     matches = lists.select { |list| list["name"] == "Shopping List" }
     expect(matches.length).to eq(1)
 
+    # Check that you can't create a list with this name
+    expect { client.create_list(name: "Shopping List") }.to raise_error(Todoable::UnprocessableEntity)
+
     # Create an item
     item = client.create_item(list_id: list["id"], name: "Get some milk")
     expect(item["name"]).to eq("Get some milk")
@@ -44,7 +47,7 @@ RSpec.describe Todoable::Client do
 
     # Finish an item
     result = client.finish_item(list_id: list["id"], id: item["id"])
-    expect(result).to eq(true)
+    expect(result).to eq("Get some milk finished")
 
     # Get list, check that item exists on it
     list = client.get_list(id: list["id"])
