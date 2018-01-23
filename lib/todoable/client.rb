@@ -192,7 +192,7 @@ module Todoable
         begin
           JSON.parse(response.body)
         rescue JSON::ParserError
-          true
+          response.body
         end
       when 401
         raise Todoable::Unauthorized.new
