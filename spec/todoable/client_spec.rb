@@ -202,7 +202,7 @@ RSpec.describe Todoable::Client do
     it "returns token and expires_at" do
       token, expires_at = client.authenticate!
       expect(token).to eq("abcdef")
-      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-06:00")
+      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-05:00")
     end
 
     it "raises exception if it cannot authenticate" do
@@ -218,7 +218,7 @@ RSpec.describe Todoable::Client do
     it "returns token and expires_at" do
       token, expires_at = client.authenticate
       expect(token).to eq("abcdef")
-      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-06:00")
+      expect(expires_at.to_s).to eq("2017-12-25T12:20:00-05:00")
     end
 
     it "return nils if it cannot authenticate" do
