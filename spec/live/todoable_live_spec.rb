@@ -12,6 +12,12 @@ RSpec.describe Todoable::Client do
     let(:base_uri) { "https://intense-hamlet-87296.herokuapp.com/api" }
     let(:username) { "username" }
     let(:password) { "password" }
+  when "ex"
+    puts("Running live tests against Teachable-Elixir API")
+
+    let(:base_uri) { "https://todoable-elixir.zeachable.cloud/api" }
+    let(:username) { "username" }
+    let(:password) { "password" }
   else
     puts("Running live tests against local API")
 
