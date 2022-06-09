@@ -1,3 +1,4 @@
+require 'pry'
 module Todoable
   NotFound = Class.new(StandardError)
   Unauthorized = Class.new(StandardError)
