@@ -2,8 +2,17 @@
 
 ## Summary
 
-This was a coding assignment for Teachable. I've built gems like this in the
-past, so I modeled it more or less on how I approached those.
+This is a Ruby client used to interact with the API for a todo-list server.
+
+It encapsulates the API calls necessary to perform the following actions:
+
+- create a new Todo List
+- update the name of a list
+- read a list, with its name and associated items
+- delete a list
+- add an unfinished item to a list
+- mark an item from a list as finished
+- delete an item from a list
 
 To configure the gem, I've provided a Configuration class with a few simple
 methods which can be called to assign username and password. In a
