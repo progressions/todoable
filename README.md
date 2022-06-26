@@ -66,25 +66,25 @@ client = Todoable::Client.new
 
 client.create_list(name: "Groceries")
 
-#=> {"name"=>"Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}
+#=> {"name"=>"Groceries", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}
 
 lists = client.lists
 
-#=> [{"name"=>"Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Death List", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Shopping", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}, {"name"=>"Birthday List", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}]
+#=> [{"name"=>"Groceries", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}, {"name"=>"Death List", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}, {"name"=>"Shopping", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}, {"name"=>"Birthday List", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}]
 
 client.update_list(id: list["id"], name: "Buy Groceries")
 
-#=> {"name"=>"Buy Groceries", "src"=>"http://todoable.teachable.tech/api/lists/...", "id"=>"..."}
+#=> {"name"=>"Buy Groceries", "src"=>"http://todoable.example.tech/api/lists/...", "id"=>"..."}
 
-item = client.create_item
+item = client.create_item(list_id: "...", name: "get dog food")
 
-#=> {"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/98b2510c-0eb7-4316-bfef-d38c762b1ffb/items/bcf6443f-7231-4064-a607-667369792a77", "id"=>"bcf6443f-7231-4064-a607-667369792a77", "list_id"=>"98b2510c-0eb7-4316-bfef-d38c762b1ffb"}
+#=> {"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.example.tech/api/lists/98b2510c-0eb7-4316-bfef-d38c762b1ffb/items/bcf6443f-7231-4064-a607-667369792a77", "id"=>"bcf6443f-7231-4064-a607-667369792a77", "list_id"=>"98b2510c-0eb7-4316-bfef-d38c762b1ffb"}
 
 # When you fetch a List with `get_list`, it includes the List's associated Items.
 
 client.get_list(id: list["id"])
 
-#=> {"name"=>"Groceries", "items"=>[{"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.teachable.tech/api/lists/.../items/...", "id"=>"..."}], "id"=>"..."}
+#=> {"name"=>"Groceries", "items"=>[{"name"=>"get dog food", "finished_at"=>nil, "src"=>"http://todoable.example.tech/api/lists/.../items/...", "id"=>"..."}], "id"=>"..."}
 
 client.finish_item(list_id: list["id"], id: item["id"])
 
